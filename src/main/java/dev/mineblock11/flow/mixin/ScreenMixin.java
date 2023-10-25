@@ -72,12 +72,7 @@ public class ScreenMixin extends Screen {
         if (this.client.world != null) {
             float progress = isClosing ? 1 - (elapsed / FlowConfig.get().easeOutDuration) : (elapsed / FlowConfig.get().easeInDuration);
 
-            float eased;
-            if(isClosing) {
-                eased = FlowConfig.get().easeOutType.eval(progress);
-            } else {
-                eased = FlowConfig.get().easeInType.eval(progress);
-            }
+            float eased = Easings.easeInOutCubic.eval(progress);
 
             int alpha = (int) MathHelper.lerp(eased, 0x00, 0xCF);
 
