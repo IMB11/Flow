@@ -8,4 +8,4 @@ Flow is a UI animation mod that adds a simple fade in-out transition into invent
 
 Flow is highly configurable, and allows you to customize the easing, duration and various other functionality such as the background tint color and the blur amount.
 
-![2023-10-25_21-55](https://github.com/mineblock11/Flow/assets/93472213/9f193bfb-d37f-4afc-9066-3534909b1c32)
+
