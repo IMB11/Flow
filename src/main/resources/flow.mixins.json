@@ -8,6 +8,7 @@
     "defaultRequire": 1
   },
   "client": [
+    "MinecraftClientMixin",
     "ScreenMixin",
     "fixes.vanilla.CartographyFixMixin",
     "fixes.vanilla.GrindstoneFixMixin",

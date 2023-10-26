@@ -1,6 +1,7 @@
 package dev.mineblock11.flow.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.mineblock11.flow.api.WindowResizeEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.GlUniform;
@@ -23,9 +24,11 @@ public class BlurHelper {
     private Framebuffer input;
     private ShaderProgram backingProgram;
 
-    public void onWindowResize(MinecraftClient client, Window window) {
-        if (this.input == null) return;
-        this.input.resize(window.getFramebufferWidth(), window.getFramebufferHeight(), MinecraftClient.IS_SYSTEM_MAC);
+    public BlurHelper() {
+        WindowResizeEvent.EVENT.register((width, height) -> {
+            if (this.input == null) return;
+            this.input.resize(width, height, MinecraftClient.IS_SYSTEM_MAC);
+        });
     }
 
     public void load(ShaderProgram backingProgram) {
