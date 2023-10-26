@@ -1,5 +1,6 @@
 package dev.mineblock11.flow.mixin;
 
+import dev.mineblock11.flow.api.FlowAPI;
 import dev.mineblock11.flow.config.Easings;
 import dev.mineblock11.flow.config.FlowConfig;
 import dev.mineblock11.flow.render.BlurHelper;
@@ -34,10 +35,16 @@ public class ScreenMixin extends Screen {
         super(title);
     }
 
+    @Inject(method = "init", at = @At("HEAD"), cancellable = false)
+    private void $mark_open_animation(CallbackInfo ci) {
+        FlowAPI.setInTransition(true);
+    }
+
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
         ci.cancel();
         if(isClosing) return;
+        FlowAPI.setInTransition(true);
         elapsed = 0f;
         isClosing = true;
         new Thread(() -> {
@@ -45,8 +52,9 @@ public class ScreenMixin extends Screen {
                 Thread.onSpinWait();
             }
             assert this.client != null;
+            assert this.client.player != null;
             this.client.execute(() -> {
-                assert this.client.player != null;
+                FlowAPI.setInTransition(false);
                 this.client.player.closeHandledScreen();
                 super.close();
             });
@@ -122,6 +130,13 @@ public class ScreenMixin extends Screen {
         if (elapsed > totalTime) elapsed = totalTime;
 
         float progress = isClosing ? 1 - (elapsed / totalTime) : (elapsed / totalTime);
+
+        FlowAPI.setTransitionProgress(progress);
+        FlowAPI.setClosing(isClosing);
+
+        if(!isClosing && progress == 1.0f) {
+            FlowAPI.setInTransition(false);
+        }
 
         if(isClosing) {
             this.finishedCloseAnimation = progress == 0;

@@ -13,6 +13,8 @@
     "fixes.vanilla.CartographyFixMixin",
     "fixes.vanilla.GrindstoneFixMixin",
     "fixes.vanilla.LoomFixMixin",
-    "fixes.vanilla.StonecutterFixMixin"
+    "fixes.vanilla.StonecutterFixMixin",
+    "compat.emi.ScreenSpaceMixin",
+    "compat.emi.SidebarPanelMixin"
   ]
 }
