@@ -42,6 +42,7 @@ public abstract class ScreenMixin extends Screen {
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
         ci.cancel();
+        if(isClosing) return;
         elapsed = 0f;
         isClosing = true;
         new Thread(() -> {
