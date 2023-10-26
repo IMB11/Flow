@@ -49,6 +49,7 @@ public abstract class ScreenMixin extends Screen {
     private void $mark_exit_animation(CallbackInfo ci) {
         ci.cancel();
         if(isClosing) return;
+        FlowAPI.setInTransition(true);
         elapsed = 0f;
         isClosing = true;
         new Thread(() -> {
