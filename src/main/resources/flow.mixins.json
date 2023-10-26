@@ -2,12 +2,14 @@
   "required": true,
   "package": "dev.mineblock11.flow.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins":[],
+  "mixins": [],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+    "MinecraftClientMixin",
     "ScreenMixin",
-    "MinecraftClientMixin"
+    "compat.emi.ScreenSpaceMixin",
+    "compat.emi.SidebarPanelMixin"
   ]
 }
