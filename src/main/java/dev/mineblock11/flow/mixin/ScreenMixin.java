@@ -72,6 +72,17 @@ public class ScreenMixin extends Screen {
     @Override
     public void renderBackground(DrawContext context) {
         assert this.client != null;
+
+        if(isClosing && !FlowConfig.get().enableEaseOut) {
+            context.fill(0, 0, this.width, this.height, 0xCF000000);
+            this.renderBlur(context, FlowConfig.get().bgBlurIntensity * 16, 16);
+            return;
+        } else if (!isClosing && !FlowConfig.get().enableEaseIn) {
+            context.fill(0, 0, this.width, this.height, 0xCF000000);
+            this.renderBlur(context, FlowConfig.get().bgBlurIntensity * 16, 16);
+            return;
+        }
+
         if (this.client.world != null) {
             float progress = isClosing ? 1 - (elapsed / FlowConfig.get().easeOutDuration) : (elapsed / FlowConfig.get().easeInDuration);
 
