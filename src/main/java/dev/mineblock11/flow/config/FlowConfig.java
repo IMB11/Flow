@@ -29,9 +29,9 @@ public class FlowConfig {
                     .build())
             .build();
     @SerialEntry
-    public Easings easeInType = Easings.easeInOutElastic;
+    public Easings easeInType = Easings.easeInOutExpo;
     @SerialEntry
-    public Easings easeOutType = Easings.easeInOutElastic;
+    public Easings easeOutType = Easings.easeInOutExpo;
     @SerialEntry
     public float easeInDuration = 0.3f;
     @SerialEntry
@@ -43,7 +43,7 @@ public class FlowConfig {
     @SerialEntry
     public Color bgColorTint = Color.BLACK;
     @SerialEntry
-    public float bgBlurIntensity = 0.0f;
+    public float bgBlurIntensity = 0.6f;
 
     public static FlowConfig get() {
         return CONFIG_CLASS_HANDLER.instance();

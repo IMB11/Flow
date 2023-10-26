@@ -13,6 +13,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,6 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HandledScreen.class)
 public class ScreenMixin extends Screen {
+    @Shadow protected int backgroundHeight;
+    @Shadow protected int backgroundWidth;
     @Unique
     private float elapsed = 0f;
     @Unique
@@ -87,7 +90,7 @@ public class ScreenMixin extends Screen {
             float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);
 
             // Render the blur from the config.
-            this.renderBlur(context, blurIntensity, 8);
+            this.renderBlur(context, blurIntensity, 16);
         } else {
             this.renderBackgroundTexture(context);
         }
@@ -112,14 +115,16 @@ public class ScreenMixin extends Screen {
             this.finishedCloseAnimation = progress == 0;
 
             if(FlowConfig.get().enableEaseOut) {
-                float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), -height, 0);
+                float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), this.client.getWindow().getHeight(), 0);
                 context.getMatrices().translate(0, offset, 0);
             }
         } else {
             if(FlowConfig.get().enableEaseIn) {
-                float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -height, 0);
+                float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -this.client.getWindow().getHeight(), 0);
                 context.getMatrices().translate(0, -offset, 0);
             }
         }
+
+        context.getMatrices().push();
     }
 }

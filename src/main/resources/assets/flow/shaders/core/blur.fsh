@@ -10,10 +10,8 @@ uniform float Size;
 
 out vec4 fragColor;
 
-// Copy of https://github.com/Minenash/Seamless-Loading-Screen/blob/Multiloader-1.20.x/common/src/main/resources/assets/seamless_loading_screen/shaders/core/blur.fsh
-// which is a copy of https://github.com/wisp-forest/owo-lib/blob/1.20/src/main/resources/assets/owo/shaders/core/blur.fsh
-// which is a copy of https://www.shadertoy.com/view/Xltfzj
-// phew!
+// from owo-lib
+// shader adapted from https://www.shadertoy.com/view/Xltfzj
 
 void main() {
     #define TAU 6.28318530718
