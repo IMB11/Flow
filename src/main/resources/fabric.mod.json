@@ -25,9 +25,10 @@
 	"mixins": [
 		"flow.mixins.json"
 	],
+	"accessWidener": "flow.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.14.23",
-		"minecraft": ">=1.20 <=1.20.1",
+		"minecraft": ">=1.20.2",
 		"fabric-api": "*"
 	}
 }

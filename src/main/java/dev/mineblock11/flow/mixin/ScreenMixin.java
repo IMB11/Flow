@@ -5,6 +5,7 @@ import dev.mineblock11.flow.config.FlowConfig;
 import dev.mineblock11.flow.render.BlurHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.Tessellator;
@@ -17,18 +18,22 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Iterator;
+
 @Mixin(HandledScreen.class)
-public class ScreenMixin extends Screen {
-    @Shadow protected int backgroundHeight;
-    @Shadow protected int backgroundWidth;
-    @Unique
-    private float elapsed = 0f;
+public abstract class ScreenMixin extends Screen {
     @Unique
     public boolean isClosing = false;
     @Unique
     public volatile boolean finishedCloseAnimation = false;
+
+    @Shadow protected abstract void drawBackground(DrawContext context, float delta, int mouseX, int mouseY);
+
+    @Unique
+    private float elapsed = 0f;
 
     protected ScreenMixin(Text title) {
         super(title);
@@ -70,10 +75,8 @@ public class ScreenMixin extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawContext context) {
-        assert this.client != null;
-
-        if(isClosing && !FlowConfig.get().enableEaseOut) {
+    public void renderInGameBackground(DrawContext context) {
+        if (isClosing && !FlowConfig.get().enableEaseOut) {
             context.fill(0, 0, this.width, this.height, 0xCF000000);
             this.renderBlur(context, FlowConfig.get().bgBlurIntensity * 16, 16);
             return;
@@ -83,36 +86,33 @@ public class ScreenMixin extends Screen {
             return;
         }
 
-        if (this.client.world != null) {
-            float progress = isClosing ? 1 - (elapsed / FlowConfig.get().easeOutDuration) : (elapsed / FlowConfig.get().easeInDuration);
+        float progress = isClosing ? 1 - (elapsed / FlowConfig.get().easeOutDuration) : (elapsed / FlowConfig.get().easeInDuration);
 
-            float eased = Easings.easeInOutCubic.eval(progress);
+        float eased = Easings.easeInOutCubic.eval(progress);
 
-            int alpha = (int) MathHelper.lerp(eased, 0x00, 0xCF);
+        int alpha = MathHelper.lerp(eased, 0x00, 0xCF);
 
-            // Convert to color specified in config using the alpha from above.
-            // format is 0xAARRGGBB
-            int RRGGBB = FlowConfig.get().bgColorTint.getRGB();
-            int AARRGGBB = (alpha << 24) | (RRGGBB & 0x00FFFFFF);
+        // Convert to color specified in config using the alpha from above.
+        // format is 0xAARRGGBB
+        int RRGGBB = FlowConfig.get().bgColorTint.getRGB();
+        int AARRGGBB = (alpha << 24) | (RRGGBB & 0x00FFFFFF);
 
-            context.fill(0, 0, this.width, this.height, AARRGGBB);
+        context.fill(0, 0, this.width, this.height, AARRGGBB);
 
-            // Lerp the blur intensity from 0 to FlowConfig.get().bgBlurIntensity
-            float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);
+        // Lerp the blur intensity from 0 to FlowConfig.get().bgBlurIntensity
+        float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);
 
-            // Render the blur from the config.
-            this.renderBlur(context, blurIntensity, 16);
-        } else {
-            this.renderBackgroundTexture(context);
-        }
+        // Render the blur from the config.
+        this.renderBlur(context, blurIntensity, 16);
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void $render_animation(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
+    private void $render_animation(Screen instance, DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderInGameBackground(context);
 
+        elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
         var totalTime = 0.3f;
-        if(isClosing) {
+        if (isClosing) {
             totalTime = FlowConfig.get().easeOutDuration;
         } else {
             totalTime = FlowConfig.get().easeInDuration;
@@ -122,20 +122,27 @@ public class ScreenMixin extends Screen {
 
         float progress = isClosing ? 1 - (elapsed / totalTime) : (elapsed / totalTime);
 
-        if(isClosing) {
+        if (isClosing) {
             this.finishedCloseAnimation = progress == 0;
 
-            if(FlowConfig.get().enableEaseOut) {
+            if (FlowConfig.get().enableEaseOut) {
                 float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), this.client.getWindow().getHeight(), 0);
                 context.getMatrices().translate(0, offset, 0);
             }
         } else {
-            if(FlowConfig.get().enableEaseIn) {
+            if (FlowConfig.get().enableEaseIn) {
                 float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -this.client.getWindow().getHeight(), 0);
                 context.getMatrices().translate(0, -offset, 0);
             }
         }
 
-        context.getMatrices().push();
+        this.drawBackground(context, delta, mouseX, mouseY);
+
+        Iterator var5 = this.drawables.iterator();
+
+        while(var5.hasNext()) {
+            Drawable drawable = (Drawable)var5.next();
+            drawable.render(context, mouseX, mouseY, delta);
+        }
     }
 }

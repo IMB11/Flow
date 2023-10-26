@@ -8,10 +8,6 @@
     "defaultRequire": 1
   },
   "client": [
-    "ScreenMixin",
-    "fixes.vanilla.CartographyFixMixin",
-    "fixes.vanilla.GrindstoneFixMixin",
-    "fixes.vanilla.LoomFixMixin",
-    "fixes.vanilla.StonecutterFixMixin"
+    "ScreenMixin"
   ]
 }
