@@ -84,10 +84,10 @@ public class ScreenMixin extends Screen {
         assert this.client != null;
 
         if(isClosing && !FlowConfig.get().enableEaseOut) {
-            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB());
+            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
             return;
         } else if (!isClosing && !FlowConfig.get().enableEaseIn) {
-            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB());
+            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
             return;
         }
 
