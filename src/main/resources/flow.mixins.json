@@ -2,7 +2,9 @@
   "required": true,
   "package": "dev.mineblock11.flow.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [],
+  "mixins": [
+    "compat.emi.StackBatcherAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

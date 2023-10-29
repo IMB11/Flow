@@ -34,6 +34,8 @@ dependencies {
 	//	Compatability mods.
 	modLocalRuntime modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
 	modLocalRuntime modCompileOnly("dev.emi:emi-fabric:${emi_version}")
+
+	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.0")))
 }
 
 processResources {
