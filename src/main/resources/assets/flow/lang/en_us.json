@@ -17,8 +17,12 @@
   "flow.config.easeOutType.desc": "The type of easing to use when closing the inventory.",
   "flow.config.easeOutDuration": "Easing Duration",
   "flow.config.easeOutDuration.desc": "The duration of the ease out animation when closing the inventory.",
+  "flow.config.disableBgBlur": "Disable Background Blur",
+  "flow.config.disableBgBlur.desc": "Disable the background blur - useful for performance on low-end devices.",
   "flow.config.bgBlurIntensity": "Background Blur Intensity",
   "flow.config.bgBlurIntensity.desc": "The intensity of the background blur when the inventory is open.",
+  "flow.config.disableBgTint": "Disable Background Tint",
+  "flow.config.disableBgTint.desc": "Disable the background tint. This isn't recommended.",
   "flow.config.bgColorTint": "Background Tint Color",
   "flow.config.bgColorTint.desc": "The color of the background tint when the inventory is open.",
 

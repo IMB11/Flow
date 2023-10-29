@@ -63,7 +63,7 @@ public class ScreenMixin extends Screen {
     }
 
     @Unique
-    public void renderBlur(DrawContext context, float size, float quality) {
+    public void renderBlurShader(DrawContext context, float size, float quality) {
         var buffer = Tessellator.getInstance().getBuffer();
         var matrix = context.getMatrices().peek().getPositionMatrix();
 
@@ -84,12 +84,10 @@ public class ScreenMixin extends Screen {
         assert this.client != null;
 
         if(isClosing && !FlowConfig.get().enableEaseOut) {
-            context.fill(0, 0, this.width, this.height, 0xCF000000);
-            this.renderBlur(context, FlowConfig.get().bgBlurIntensity * 16, 16);
+            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB());
             return;
         } else if (!isClosing && !FlowConfig.get().enableEaseIn) {
-            context.fill(0, 0, this.width, this.height, 0xCF000000);
-            this.renderBlur(context, FlowConfig.get().bgBlurIntensity * 16, 16);
+            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB());
             return;
         }
 
@@ -105,15 +103,23 @@ public class ScreenMixin extends Screen {
             int RRGGBB = FlowConfig.get().bgColorTint.getRGB();
             int AARRGGBB = (alpha << 24) | (RRGGBB & 0x00FFFFFF);
 
-            context.fill(0, 0, this.width, this.height, AARRGGBB);
-
             // Lerp the blur intensity from 0 to FlowConfig.get().bgBlurIntensity
             float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);
 
-            // Render the blur from the config.
-            this.renderBlur(context, blurIntensity, 16);
+            this.renderBgEffects(context, blurIntensity, AARRGGBB);
         } else {
             this.renderBackgroundTexture(context);
+        }
+    }
+
+    @Unique
+    private void renderBgEffects(DrawContext context, float blurIntensity, int color) {
+        if(!FlowConfig.get().disableBgTint) {
+            context.fill(0, 0, this.width, this.height, color);
+        }
+
+        if(!FlowConfig.get().disableBgBlur) {
+            this.renderBlurShader(context, blurIntensity * 16, 16);
         }
     }
 
