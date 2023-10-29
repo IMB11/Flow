@@ -86,10 +86,10 @@ public abstract class ScreenMixin extends Screen {
     @Override
     public void renderInGameBackground(DrawContext context) {
         if (isClosing && !FlowConfig.get().enableEaseOut) {
-            renderBgEffects(context, FlowConfig.get().bgBlurIntensity * 16, 0xCF000000);
+            renderBgEffects(context, FlowConfig.get().bgBlurIntensity * 16, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
             return;
         } else if (!isClosing && !FlowConfig.get().enableEaseIn) {
-            renderBgEffects(context, FlowConfig.get().bgBlurIntensity * 16, 0xCF000000);
+            renderBgEffects(context, FlowConfig.get().bgBlurIntensity * 16, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
             return;
         }
 
