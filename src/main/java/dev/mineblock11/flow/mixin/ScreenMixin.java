@@ -54,6 +54,7 @@ public class ScreenMixin extends Screen {
             assert this.client != null;
             assert this.client.player != null;
             this.client.execute(() -> {
+                this.finishedCloseAnimation = false;
                 FlowAPI.setInTransition(false);
                 this.client.player.closeHandledScreen();
                 super.close();
