@@ -52,19 +52,19 @@ public class OffsetProvider {
     }
 
     public void apply(MatrixStack matrices) {
-        if(shouldScale) {
-            if(overrideScale) {
-                matrices.scale(overrideScaleX, overrideScaleY, overrideScaleZ);
-            } else {
-                matrices.scale(x, y, z);
-            }
-        }
-
         if(shouldTranslate) {
             if(overrideTranslation) {
                 matrices.translate(overrideTranslationX, overrideTranslationY, overrideTranslationZ);
             } else {
                 matrices.translate(x, y, z);
+            }
+        }
+
+        if(shouldScale) {
+            if(overrideScale) {
+                matrices.scale(overrideScaleX, overrideScaleY, overrideScaleZ);
+            } else {
+                matrices.scale(x, y, z);
             }
         }
     }
