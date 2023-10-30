@@ -5,9 +5,10 @@ import dev.emi.emi.screen.EmiScreenManager;
 import dev.emi.emi.screen.StackBatcher;
 import dev.mineblock11.flow.api.FlowAPI;
 import dev.mineblock11.flow.compat.EmiStackBatcherSetter;
+import dev.mineblock11.flow.config.EntryType;
 import dev.mineblock11.flow.config.FlowConfig;
+import dev.mineblock11.flow.config.OffsetProvider;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -42,17 +43,14 @@ public abstract class ScreenSpaceMixin {
                 if(FlowAPI.isInTransition()) {
                     var progress = FlowAPI.getTransitionProgress();
                     int height = MinecraftClient.getInstance().getWindow().getFramebufferHeight();
-                    if(FlowAPI.isClosing()) {
-                        if(!FlowConfig.get().disableEaseOut) {
-                            float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), height, 0);
-                            ((EmiStackBatcherSetter) this.batcher).setY((int) offset);
-                        }
-                    } else {
-                        if(!FlowConfig.get().disableEaseIn) {
-                            float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), height, 0);
-                            ((EmiStackBatcherSetter) this.batcher).setY((int) offset);
-                        }
+                    int width = MinecraftClient.getInstance().getWindow().getFramebufferWidth();
+                    if(FlowAPI.isClosing() && FlowConfig.get().disableEaseOut) {
+                        return;
+                    } else if(FlowConfig.get().disableEaseIn) {
+                        return;
                     }
+                    OffsetProvider provider = EntryType.EXPAND.calculateOffset(width, height, progress, FlowAPI.isClosing() ? FlowConfig.get().easeOutType : FlowConfig.get().easeInType);
+                    provider.apply((EmiStackBatcherSetter) this.batcher);
                 }
             }
     }

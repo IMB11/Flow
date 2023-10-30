@@ -3,9 +3,10 @@ package dev.mineblock11.flow.mixin.compat.emi;
 import dev.emi.emi.runtime.EmiDrawContext;
 import dev.emi.emi.screen.EmiScreenManager;
 import dev.mineblock11.flow.api.FlowAPI;
+import dev.mineblock11.flow.config.EntryType;
 import dev.mineblock11.flow.config.FlowConfig;
+import dev.mineblock11.flow.config.OffsetProvider;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,18 +29,14 @@ public class SidebarPanelMixin {
         context.matrices().push();
         if(FlowAPI.isInTransition()) {
             var progress = FlowAPI.getTransitionProgress();
-            int height = MinecraftClient.getInstance().getWindow().getFramebufferHeight();
-            if(FlowAPI.isClosing()) {
-                if(!FlowConfig.get().disableEaseOut) {
-                    float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), height, 0);
-                    context.matrices().translate(0, offset, 0);
-                }
-            } else {
-                if(!FlowConfig.get().disableEaseIn) {
-                    float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -height, 0);
-                    context.matrices().translate(0, -offset, 0);
-                }
+            if(FlowAPI.isClosing() && FlowConfig.get().disableEaseOut) {
+                return;
+            } else if(FlowConfig.get().disableEaseIn) {
+                return;
             }
+
+            OffsetProvider provider = EntryType.EXPAND.calculateOffset(MinecraftClient.getInstance().currentScreen.width, MinecraftClient.getInstance().currentScreen.height, progress, FlowAPI.isClosing() ? FlowConfig.get().easeOutType : FlowConfig.get().easeInType);
+            provider.apply(context.matrices());
         }
     }
 }

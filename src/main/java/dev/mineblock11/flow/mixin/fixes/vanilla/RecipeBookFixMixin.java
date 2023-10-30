@@ -1,11 +1,12 @@
 package dev.mineblock11.flow.mixin.fixes.vanilla;
 
 import dev.mineblock11.flow.api.FlowAPI;
+import dev.mineblock11.flow.config.EntryType;
 import dev.mineblock11.flow.config.FlowConfig;
+import dev.mineblock11.flow.config.OffsetProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,17 +21,14 @@ public class RecipeBookFixMixin {
     public void $apply_transition(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if(FlowAPI.isInTransition()) {
             var progress = FlowAPI.getTransitionProgress();
-            if(FlowAPI.isClosing()) {
-                if(!FlowConfig.get().disableEaseOut) {
-                    float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), this.client.getWindow().getHeight(), 0);
-                    context.getMatrices().translate(0, offset, 0);
-                }
-            } else {
-                if(!FlowConfig.get().disableEaseIn) {
-                    float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -this.client.getWindow().getHeight(), 0);
-                    context.getMatrices().translate(0, -offset, 0);
-                }
+            if(FlowAPI.isClosing() && FlowConfig.get().disableEaseOut) {
+                return;
+            } else if(FlowConfig.get().disableEaseIn) {
+                return;
             }
+
+            OffsetProvider provider = EntryType.LEFT.calculateOffset(this.client.currentScreen.width, this.client.currentScreen.height, progress, FlowAPI.isClosing() ? FlowConfig.get().easeOutType : FlowConfig.get().easeInType);
+            provider.apply(context.getMatrices());
         }
     }
 }

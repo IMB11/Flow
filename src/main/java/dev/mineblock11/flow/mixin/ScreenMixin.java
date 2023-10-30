@@ -2,7 +2,9 @@ package dev.mineblock11.flow.mixin;
 
 import dev.mineblock11.flow.api.FlowAPI;
 import dev.mineblock11.flow.config.Easings;
+import dev.mineblock11.flow.config.EntryType;
 import dev.mineblock11.flow.config.FlowConfig;
+import dev.mineblock11.flow.config.OffsetProvider;
 import dev.mineblock11.flow.render.BlurHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -150,16 +152,17 @@ public class ScreenMixin extends Screen {
         if(isClosing) {
             this.finishedCloseAnimation = progress == 0;
 
-            if(!FlowConfig.get().disableEaseOut) {
-                float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), this.client.getWindow().getHeight(), 0);
-                context.getMatrices().translate(0, offset, 0);
+            if(FlowConfig.get().disableEaseOut) {
+                context.getMatrices().push();
+                return;
             }
-        } else {
-            if(!FlowConfig.get().disableEaseIn) {
-                float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -this.client.getWindow().getHeight(), 0);
-                context.getMatrices().translate(0, -offset, 0);
-            }
+        } else if(FlowConfig.get().disableEaseIn) {
+            context.getMatrices().push();
+            return;
         }
+
+        OffsetProvider provider = EntryType.EXPAND.calculateOffset(this.width, this.height, progress, isClosing ? FlowConfig.get().easeOutType : FlowConfig.get().easeInType);
+        provider.apply(context.getMatrices());
 
         context.getMatrices().push();
     }
