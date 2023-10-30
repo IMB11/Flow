@@ -8,6 +8,7 @@ import dev.mineblock11.flow.api.animation.OffsetProvider;
 import dev.mineblock11.flow.api.rendering.FlowBlurHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.Tessellator;
@@ -24,10 +25,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Iterator;
+
 @Mixin(HandledScreen.class)
-public class ScreenMixin extends Screen {
+public abstract class ScreenMixin extends Screen {
     @Shadow protected int backgroundHeight;
     @Shadow protected int backgroundWidth;
+
+    @Shadow protected abstract void drawBackground(DrawContext context, float delta, int mouseX, int mouseY);
+
     @Unique
     private float elapsed = 0f;
     @Unique
@@ -75,7 +81,7 @@ public class ScreenMixin extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawContext context) {
+    public void renderInGameBackground(DrawContext context) {
         assert this.client != null;
 
         if (isClosing && FlowConfig.get().disableEaseOut || isDisabledScreen()) {
@@ -124,8 +130,10 @@ public class ScreenMixin extends Screen {
         }
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void $render_animation(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
+    private void $render_animation(Screen instance, DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderInGameBackground(context);
+
         elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
 
         var totalTime = 0.3f;
@@ -162,6 +170,13 @@ public class ScreenMixin extends Screen {
         OffsetProvider provider = animationType.calculateOffset(this.width, this.height, progress, isClosing);
         provider.apply(context.getMatrices());
 
-        context.getMatrices().push();
+        this.drawBackground(context, delta, mouseX, mouseY);
+
+        Iterator var5 = this.drawables.iterator();
+
+        while(var5.hasNext()) {
+            Drawable drawable = (Drawable)var5.next();
+            drawable.render(context, mouseX, mouseY, delta);
+        }
     }
 }
