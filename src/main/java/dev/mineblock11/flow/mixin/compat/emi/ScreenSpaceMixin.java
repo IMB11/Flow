@@ -14,9 +14,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Pseudo
 @Mixin(value = EmiScreenManager.ScreenSpace.class, remap = false)
@@ -45,12 +43,12 @@ public abstract class ScreenSpaceMixin {
                     var progress = FlowAPI.getTransitionProgress();
                     int height = MinecraftClient.getInstance().getWindow().getFramebufferHeight();
                     if(FlowAPI.isClosing()) {
-                        if(FlowConfig.get().enableEaseOut) {
+                        if(!FlowConfig.get().disableEaseOut) {
                             float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), height, 0);
                             ((EmiStackBatcherSetter) this.batcher).setY((int) offset);
                         }
                     } else {
-                        if(FlowConfig.get().enableEaseIn) {
+                        if(!FlowConfig.get().disableEaseIn) {
                             float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), height, 0);
                             ((EmiStackBatcherSetter) this.batcher).setY((int) offset);
                         }

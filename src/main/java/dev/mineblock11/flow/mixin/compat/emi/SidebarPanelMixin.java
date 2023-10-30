@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
@@ -31,12 +30,12 @@ public class SidebarPanelMixin {
             var progress = FlowAPI.getTransitionProgress();
             int height = MinecraftClient.getInstance().getWindow().getFramebufferHeight();
             if(FlowAPI.isClosing()) {
-                if(FlowConfig.get().enableEaseOut) {
+                if(!FlowConfig.get().disableEaseOut) {
                     float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), height, 0);
                     context.matrices().translate(0, offset, 0);
                 }
             } else {
-                if(FlowConfig.get().enableEaseIn) {
+                if(!FlowConfig.get().disableEaseIn) {
                     float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -height, 0);
                     context.matrices().translate(0, -offset, 0);
                 }

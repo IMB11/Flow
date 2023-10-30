@@ -12,11 +12,13 @@ base {
 
 repositories {
 	mavenCentral()
+	mavenLocal()
 	maven { url "https://maven.terraformersmc.com/releases" }
 	maven { url "https://maven.isxander.dev/releases" }
 	maven { url "https://jitpack.io" }
 	maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 	maven { url "https://maven.quiltmc.org/repository/release" }
+	maven { url "https://maven.mineblock11.dev/releases" }
 }
 
 dependencies {
@@ -27,18 +29,21 @@ dependencies {
 
 	include modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}")
 
+	modImplementation "com.mineblock11:MRU:${project.mru_version}"
+
 	//	Compatability mods.
 	modLocalRuntime modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}")
-	modLocalRuntime modCompileOnly("dev.emi:emi-fabric:${emi_version}")
+	modLocalRuntime modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.0")))
 }
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "mru_version", project.mru_version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": project.version, "mru_version": project.mru_version
 	}
 }
 

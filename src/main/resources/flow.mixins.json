@@ -12,7 +12,6 @@
     "compat.emi.ScreenSpaceMixin",
     "compat.emi.SidebarPanelMixin",
     "compat.emi.StackBatcherAccessor",
-    "fixes.vanilla.AnvilFixMixin",
     "fixes.vanilla.CartographyFixMixin",
     "fixes.vanilla.GrindstoneFixMixin",
     "fixes.vanilla.LoomFixMixin",

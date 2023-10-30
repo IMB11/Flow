@@ -1,6 +1,6 @@
 package dev.mineblock11.flow.config;
 
-import com.google.gson.GsonBuilder;
+import com.mineblock11.mru.config.YACLHelper;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
@@ -8,26 +8,15 @@ import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
-import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.awt.*;
-import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FlowConfig {
-    private static final Path CONFIG_FILE_PATH = FabricLoader.getInstance().getConfigDir().resolve("flow.config.json");
-    public static ConfigClassHandler<FlowConfig> CONFIG_CLASS_HANDLER = ConfigClassHandler
-            .createBuilder(FlowConfig.class)
-            .id(new Identifier("flow", "config"))
-            .serializer(config -> GsonConfigSerializerBuilder
-                    .create(config)
-                    .setPath(CONFIG_FILE_PATH)
-                    .appendGsonBuilder(GsonBuilder::setPrettyPrinting)
-                    .build())
-            .build();
+    private static final YACLHelper.NamespacedHelper HELPER = new YACLHelper.NamespacedHelper("flow");
+    public static ConfigClassHandler<FlowConfig> CONFIG_CLASS_HANDLER = HELPER.createHandler(FlowConfig.class);
     @SerialEntry
     public Easings easeInType = Easings.easeInOutExpo;
     @SerialEntry
@@ -37,9 +26,9 @@ public class FlowConfig {
     @SerialEntry
     public float easeOutDuration = 0.3f;
     @SerialEntry
-    public boolean enableEaseIn = true;
+    public boolean disableEaseIn = false;
     @SerialEntry
-    public boolean enableEaseOut = true;
+    public boolean disableEaseOut = false;
     @SerialEntry
     public Color bgColorTint = Color.BLACK;
     @SerialEntry
@@ -60,10 +49,10 @@ public class FlowConfig {
     public static YetAnotherConfigLib getInstance() {
         return YetAnotherConfigLib.create(CONFIG_CLASS_HANDLER, (FlowConfig defaults, FlowConfig config, YetAnotherConfigLib.Builder builder) -> {
             var easeInTypeOption = Option.<Easings>createBuilder()
-                    .name(getName("easeInType"))
+                    .name(HELPER.getName("easeInType"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("easeInType"))
-                            .webpImage(getImg("easeIn"))
+                            .text(HELPER.getDesc("easeInType"))
+                            .webpImage(HELPER.getImg("easeIn"))
                             .build())
                     .controller(opt -> EnumControllerBuilder.create(opt)
                             .enumClass(Easings.class)
@@ -73,10 +62,10 @@ public class FlowConfig {
                     .build();
 
             var easeOutTypeOption = Option.<Easings>createBuilder()
-                    .name(getName("easeOutType"))
+                    .name(HELPER.getName("easeOutType"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("easeOutType"))
-                            .webpImage(getImg("easeOut"))
+                            .text(HELPER.getDesc("easeOutType"))
+                            .webpImage(HELPER.getImg("easeOut"))
                             .build())
                     .controller(opt -> EnumControllerBuilder.create(opt)
                             .enumClass(Easings.class)
@@ -86,10 +75,10 @@ public class FlowConfig {
                     .build();
 
             var easeInDurationOption = Option.<Float>createBuilder()
-                    .name(getName("easeInDuration"))
+                    .name(HELPER.getName("easeInDuration"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("easeInDuration"))
-                            .webpImage(getImg("easeIn"))
+                            .text(HELPER.getDesc("easeInDuration"))
+                            .webpImage(HELPER.getImg("easeIn"))
                             .build())
                     .controller(opt -> FloatSliderControllerBuilder.create(opt)
                             .range(0.1f, 10f)
@@ -100,10 +89,10 @@ public class FlowConfig {
                     .build();
 
             var easeOutDurationOption = Option.<Float>createBuilder()
-                    .name(getName("easeOutDuration"))
+                    .name(HELPER.getName("easeOutDuration"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("easeOutDuration"))
-                            .webpImage(getImg("easeOut"))
+                            .text(HELPER.getDesc("easeOutDuration"))
+                            .webpImage(HELPER.getImg("easeOut"))
                             .build())
                     .controller(opt -> FloatSliderControllerBuilder.create(opt)
                             .range(0.1f, 10f)
@@ -113,50 +102,32 @@ public class FlowConfig {
                     .binding(defaults.easeOutDuration, () -> config.easeOutDuration, (val) -> config.easeOutDuration = val)
                     .build();
 
-            var enableEaseInOption = Option.<Boolean>createBuilder()
-                    .name(getName("enableEaseIn"))
-                    .listener((opt, val) -> {
-                            easeInTypeOption.setAvailable(val);
-                            easeInDurationOption.setAvailable(val);
-                    })
-                    .description(OptionDescription.createBuilder()
-                            .text(getDesc("enableEaseIn"))
-                            .webpImage(getImg("easeIn"))
-                            .build())
-                    .controller(opt -> BooleanControllerBuilder.create(opt).onOffFormatter())
-                    .binding(defaults.enableEaseIn, () -> config.enableEaseIn, (val) -> config.enableEaseIn = val)
-                    .build();
+            var easeInOptionGroup = HELPER.createToggleableGroup("easeIn", true, new ArrayList<>(List.of(
+                    easeInTypeOption,
+                    easeInDurationOption
+            )), defaults.disableEaseIn, () -> config.disableEaseIn, (val) -> config.disableEaseIn = val);
 
-            var enableEaseOutOption = Option.<Boolean>createBuilder()
-                    .name(getName("enableEaseOut"))
-                    .listener((opt, val) -> {
-                            easeOutTypeOption.setAvailable(val);
-                            easeOutDurationOption.setAvailable(val);
-                    })
-                    .description(OptionDescription.createBuilder()
-                            .text(getDesc("enableEaseOut"))
-                            .webpImage(getImg("easeOut"))
-                            .build())
-                    .controller(opt -> BooleanControllerBuilder.create(opt).onOffFormatter())
-                    .binding(defaults.enableEaseOut, () -> config.enableEaseOut, (val) -> config.enableEaseOut = val)
-                    .build();
+            var easeOutOptionGroup = HELPER.createToggleableGroup("easeOut", true, new ArrayList<>(List.of(
+                    easeOutTypeOption,
+                    easeOutDurationOption
+            )), defaults.disableEaseOut, () -> config.disableEaseOut, (val) -> config.disableEaseOut = val);
 
             // blurs + tint
             var bgColorTintOption = Option.<Color>createBuilder()
-                    .name(getName("bgColorTint"))
+                    .name(HELPER.getName("bgColorTint"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("bgColorTint"))
-                            .webpImage(getImg("bgColorTint"))
+                            .text(HELPER.getDesc("bgColorTint"))
+                            .webpImage(HELPER.getImg("bgColorTint"))
                             .build())
                     .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(false))
                     .binding(defaults.bgColorTint, () -> config.bgColorTint, (val) -> config.bgColorTint = val)
                     .build();
 
             var bgBlurIntensityOption = Option.<Float>createBuilder()
-                    .name(getName("bgBlurIntensity"))
+                    .name(HELPER.getName("bgBlurIntensity"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("bgBlurIntensity"))
-                            .webpImage(getImg("bgBlurIntensity"))
+                            .text(HELPER.getDesc("bgBlurIntensity"))
+                            .webpImage(HELPER.getImg("bgBlurIntensity"))
                             .build())
                     .controller(opt -> FloatSliderControllerBuilder.create(opt)
                             .range(0.1f, 1f)
@@ -167,10 +138,10 @@ public class FlowConfig {
                     .build();
 
             var disableBgBlurOption = Option.<Boolean>createBuilder()
-                    .name(getName("disableBgBlur"))
+                    .name(HELPER.getName("disableBgBlur"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("disableBgBlur"))
-                            .webpImage(getImg("disableBgBlur"))
+                            .text(HELPER.getDesc("disableBgBlur"))
+                            .webpImage(HELPER.getImg("disableBgBlur"))
                             .build())
                     .listener((opt, val) -> {
                         bgBlurIntensityOption.setAvailable(!val);
@@ -180,10 +151,10 @@ public class FlowConfig {
                     .build();
 
             var disableBgTintOption = Option.<Boolean>createBuilder()
-                    .name(getName("disableBgTint"))
+                    .name(HELPER.getName("disableBgTint"))
                     .description(OptionDescription.createBuilder()
-                            .text(getDesc("disableBgTint"))
-                            .webpImage(getImg("disableBgTint"))
+                            .text(HELPER.getDesc("disableBgTint"))
+                            .webpImage(HELPER.getImg("disableBgTint"))
                             .build())
                     .listener((opt, val) -> {
                         bgColorTintOption.setAvailable(!val);
@@ -196,33 +167,8 @@ public class FlowConfig {
                     .title(Text.translatable("flow.config.title"))
                     .category(ConfigCategory.createBuilder()
                             .name(Text.translatable("flow.config.category.general"))
-                            .group(OptionGroup.createBuilder()
-                                    .name(Text.translatable("flow.config.group.easeIn"))
-                                    .collapsed(false)
-                                    .description(OptionDescription.createBuilder()
-                                            .text(Text.translatable("flow.config.group.easeIn.description"))
-                                            .webpImage(getImg("easeIn"))
-                                            .build())
-                                    .options(List.of(
-                                            enableEaseInOption,
-                                            easeInTypeOption,
-                                            easeInDurationOption
-                                    ))
-                                    .build()
-                            ).group(OptionGroup.createBuilder()
-                                    .name(Text.translatable("flow.config.group.easeOut"))
-                                    .collapsed(false)
-                                    .description(OptionDescription.createBuilder()
-                                            .text(Text.translatable("flow.config.group.easeOut.description"))
-                                            .webpImage(getImg("easeOut"))
-                                            .build())
-                                    .options(List.of(
-                                            enableEaseOutOption,
-                                            easeOutTypeOption,
-                                            easeOutDurationOption
-                                    ))
-                                    .build()
-                            )
+                            .group(easeInOptionGroup)
+                            .group(easeOutOptionGroup)
                             .options(List.of(
                                     disableBgTintOption,
                                     bgColorTintOption,
@@ -230,17 +176,5 @@ public class FlowConfig {
                                     bgBlurIntensityOption
                             )).build());
         });
-    }
-
-    private static Text getName(String id) {
-        return Text.translatable("flow.config." + id);
-    }
-
-    private static Text getDesc(String id) {
-        return Text.translatable("flow.config." + id + ".desc");
-    }
-
-    private static Identifier getImg(String id) {
-        return new Identifier("flow", "textures/config/" + id.toLowerCase() + ".webp");
     }
 }

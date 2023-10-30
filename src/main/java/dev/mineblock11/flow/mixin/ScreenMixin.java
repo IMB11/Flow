@@ -42,6 +42,8 @@ public class ScreenMixin extends Screen {
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
+        if(FlowConfig.get().disableEaseOut) return;
+
         ci.cancel();
         if(isClosing) return;
         FlowAPI.setInTransition(true);
@@ -83,10 +85,10 @@ public class ScreenMixin extends Screen {
     public void renderBackground(DrawContext context) {
         assert this.client != null;
 
-        if(isClosing && !FlowConfig.get().enableEaseOut) {
+        if(isClosing && FlowConfig.get().disableEaseOut) {
             this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
             return;
-        } else if (!isClosing && !FlowConfig.get().enableEaseIn) {
+        } else if (!isClosing && FlowConfig.get().disableEaseIn) {
             this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
             return;
         }
@@ -148,12 +150,12 @@ public class ScreenMixin extends Screen {
         if(isClosing) {
             this.finishedCloseAnimation = progress == 0;
 
-            if(FlowConfig.get().enableEaseOut) {
+            if(!FlowConfig.get().disableEaseOut) {
                 float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), this.client.getWindow().getHeight(), 0);
                 context.getMatrices().translate(0, offset, 0);
             }
         } else {
-            if(FlowConfig.get().enableEaseIn) {
+            if(!FlowConfig.get().disableEaseIn) {
                 float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -this.client.getWindow().getHeight(), 0);
                 context.getMatrices().translate(0, -offset, 0);
             }

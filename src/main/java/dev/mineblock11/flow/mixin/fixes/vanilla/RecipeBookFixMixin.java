@@ -21,12 +21,12 @@ public class RecipeBookFixMixin {
         if(FlowAPI.isInTransition()) {
             var progress = FlowAPI.getTransitionProgress();
             if(FlowAPI.isClosing()) {
-                if(FlowConfig.get().enableEaseOut) {
+                if(!FlowConfig.get().disableEaseOut) {
                     float offset = MathHelper.lerp(FlowConfig.get().easeOutType.eval(progress), this.client.getWindow().getHeight(), 0);
                     context.getMatrices().translate(0, offset, 0);
                 }
             } else {
-                if(FlowConfig.get().enableEaseIn) {
+                if(!FlowConfig.get().disableEaseIn) {
                     float offset = MathHelper.lerp(FlowConfig.get().easeInType.eval(progress), -this.client.getWindow().getHeight(), 0);
                     context.getMatrices().translate(0, -offset, 0);
                 }
