@@ -1,6 +1,7 @@
 {
   "flow.config.title": "Flow Config",
-  "flow.config.category.general": "Inventory Transitions",
+  "flow.config.category.general": "Transitions",
+  "flow.config.category.compat": "Compatability",
 
   "flow.config.group.easeIn": "Ease In",
   "flow.config.group.easeIn.description": "Configuration options related to the opening of the inventory.",
@@ -57,6 +58,9 @@
   "flow.config.animationType.expandBottomLeft": "Expand Bottom Left",
   "flow.config.animationType.expandBottomCenter": "Expand Bottom Center",
   "flow.config.animationType.expandBottomRight": "Expand Bottom Right",
+
+  "flow.config.disabledScreens": "Disabled Screens",
+  "flow.config.disabledScreens.desc": "A list of screens to disable the inventory on. The value of each list item should be the screen's class name.",
 
   "flow.toast.emi.title": "Warning, EMI installed.",
   "flow.toast.emi.description": "EMI does not work well with expand animations, it's recommended to use the sliding animations."

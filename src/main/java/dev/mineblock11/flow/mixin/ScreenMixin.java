@@ -46,7 +46,7 @@ public class ScreenMixin extends Screen {
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
-        if(FlowConfig.get().disableEaseOut) return;
+        if(FlowConfig.get().disableEaseOut || isDisabledScreen()) return;
 
         ci.cancel();
         if(isClosing) return;
@@ -68,11 +68,17 @@ public class ScreenMixin extends Screen {
         }).start();
     }
 
+    @Unique
+    public boolean isDisabledScreen() {
+        String className = this.getClass().getName();
+        return FlowConfig.get().disabledScreens.contains(className);
+    }
+
     @Override
     public void renderBackground(DrawContext context) {
         assert this.client != null;
 
-        if (isClosing && FlowConfig.get().disableEaseOut) {
+        if (isClosing && FlowConfig.get().disableEaseOut || isDisabledScreen()) {
             renderStaticBg(context);
             return;
         } else if (!isClosing && FlowConfig.get().disableEaseIn) {
@@ -143,11 +149,11 @@ public class ScreenMixin extends Screen {
         if(isClosing) {
             this.finishedCloseAnimation = progress == 0;
 
-            if(FlowConfig.get().disableEaseOut) {
+            if(FlowConfig.get().disableEaseOut || isDisabledScreen()) {
                 context.getMatrices().push();
                 return;
             }
-        } else if(FlowConfig.get().disableEaseIn) {
+        } else if(FlowConfig.get().disableEaseIn || isDisabledScreen()) {
             context.getMatrices().push();
             return;
         }

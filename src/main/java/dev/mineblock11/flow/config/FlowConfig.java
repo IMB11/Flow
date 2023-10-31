@@ -2,10 +2,7 @@ package dev.mineblock11.flow.config;
 
 import com.mineblock11.mru.config.YACLHelper;
 import dev.isxander.yacl3.api.*;
-import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
-import dev.isxander.yacl3.api.controller.ColorControllerBuilder;
-import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
-import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.*;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.mineblock11.flow.api.FlowAPI;
@@ -45,6 +42,11 @@ public class FlowConfig {
     public boolean disableBgBlur = false;
     @SerialEntry
     public boolean disableBgTint = false;
+
+    @SerialEntry
+    public List<String> disabledScreens = List.of(
+            "CuriosScreen"
+    );
 
     public static FlowConfig get() {
         return CONFIG_CLASS_HANDLER.instance();
@@ -187,6 +189,15 @@ public class FlowConfig {
                     .binding(defaults.disableBgTint, () -> config.disableBgTint, (val) -> config.disableBgTint = val)
                     .build();
 
+            var disabledScreens = ListOption.<String>createBuilder()
+                    .name(HELPER.getName("disabledScreens"))
+                    .description(HELPER.description("disabledScreens"))
+                    .collapsed(false)
+                    .binding(defaults.disabledScreens, () -> config.disabledScreens, (val) -> config.disabledScreens = val)
+                    .controller(StringControllerBuilder::create)
+                    .initial("ScreenClassName")
+                    .build();
+
             return builder
                     .title(Text.translatable("flow.config.title"))
                     .save(FlowAPI::handleConfigSaving)
@@ -199,7 +210,11 @@ public class FlowConfig {
                                     bgColorTintOption,
                                     disableBgBlurOption,
                                     bgBlurIntensityOption
-                            )).build());
+                            )).build())
+                    .category(ConfigCategory.createBuilder()
+                            .name(Text.translatable("flow.config.category.compat"))
+                            .option(disabledScreens)
+                            .build());
         });
     }
 }

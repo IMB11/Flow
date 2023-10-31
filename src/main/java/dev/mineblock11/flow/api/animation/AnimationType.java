@@ -5,11 +5,11 @@ import net.minecraft.util.math.MathHelper;
 
 public enum AnimationType {
     slideUp((width, height, progress, easing) -> {
-        var easedValue = MathHelper.lerp(easing.eval(progress), -height, 0);
+        var easedValue = MathHelper.lerp(easing.eval(progress), height, 0);
         return new OffsetProvider(0, easedValue, 0, false, true);
     }),
     slideDown((width, height, progress, easing) -> {
-        var easedValue = MathHelper.lerp(easing.eval(progress), height, 0);
+        var easedValue = MathHelper.lerp(easing.eval(progress), -height, 0);
         return new OffsetProvider(0, easedValue, 0, false, true);
     }),
     slideLeft((width, height, progress, easing) -> {
