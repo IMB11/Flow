@@ -13,9 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Pseudo
 @Mixin(value = StackBatcher.class, remap = false)
 public class StackBatcherAccessor implements EmiStackBatcherSetter {
-    @Shadow private int y;
+    @Shadow
+    private int y;
 
-    @Shadow private int x;
+    @Shadow
+    private int x;
 
     @Unique
     private int initialX = 0;
@@ -24,7 +26,7 @@ public class StackBatcherAccessor implements EmiStackBatcherSetter {
 
     @Inject(method = "begin", at = @At("HEAD"))
     public void captureInitialX(int x, int y, int z, CallbackInfo ci) {
-        if(!capturedInitialX) {
+        if (!capturedInitialX) {
             initialX = x;
             capturedInitialX = true;
         }
@@ -41,5 +43,7 @@ public class StackBatcherAccessor implements EmiStackBatcherSetter {
     }
 
     @Override
-    public void setX(int x) { this.x = x; }
+    public void setX(int x) {
+        this.x = x;
+    }
 }

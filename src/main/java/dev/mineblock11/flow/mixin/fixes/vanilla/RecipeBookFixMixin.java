@@ -21,13 +21,11 @@ public class RecipeBookFixMixin {
     public void $apply_transition(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if(FlowAPI.isInTransition()) {
             var progress = FlowAPI.getTransitionProgress();
-            if(FlowAPI.isClosing() && FlowConfig.get().disableEaseOut) {
-                return;
-            } else if(FlowConfig.get().disableEaseIn) {
-                return;
-            }
 
-            OffsetProvider provider = AnimationType.expandTopRight.calculateOffset(this.client.currentScreen.width, this.client.currentScreen.height, progress, FlowAPI.isClosing());
+            if(!FlowAPI.shouldCalculate()) return;
+
+            AnimationType animationType = AnimationType.getAnimationType(FlowAPI.isClosing());
+            OffsetProvider provider = animationType.calculateOffset(this.client.currentScreen.width, this.client.currentScreen.height, progress, FlowAPI.isClosing());
             provider.apply(context.getMatrices());
         }
     }

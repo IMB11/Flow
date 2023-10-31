@@ -9,6 +9,7 @@
   "client": [
     "MinecraftClientMixin",
     "ScreenMixin",
+    "ToastManagerEntryMixin",
     "compat.emi.ScreenSpaceMixin",
     "compat.emi.SidebarPanelMixin",
     "compat.emi.StackBatcherAccessor",

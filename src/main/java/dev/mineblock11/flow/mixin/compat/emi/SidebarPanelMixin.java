@@ -4,7 +4,6 @@ import dev.emi.emi.runtime.EmiDrawContext;
 import dev.emi.emi.screen.EmiScreenManager;
 import dev.mineblock11.flow.api.FlowAPI;
 import dev.mineblock11.flow.api.animation.AnimationType;
-import dev.mineblock11.flow.config.FlowConfig;
 import dev.mineblock11.flow.api.animation.OffsetProvider;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,15 +26,15 @@ public class SidebarPanelMixin {
         // Offset the background texture to account for the transition animation - for some reason the background
         // texture isn't affected by the matrix transformations in the ScreenSpaceMixin, so we have to do it here as well.
         context.matrices().push();
-        if(FlowAPI.isInTransition()) {
+        if (FlowAPI.isInTransition()) {
             var progress = FlowAPI.getTransitionProgress();
-            if(FlowAPI.isClosing() && FlowConfig.get().disableEaseOut) {
-                return;
-            } else if(FlowConfig.get().disableEaseIn) {
+
+            if (!FlowAPI.shouldCalculate()) {
                 return;
             }
 
-            OffsetProvider provider = AnimationType.expandTopRight.calculateOffset(MinecraftClient.getInstance().currentScreen.width, MinecraftClient.getInstance().currentScreen.height, progress, FlowAPI.isClosing());
+            AnimationType animationType = AnimationType.getAnimationType(FlowAPI.isClosing());
+            OffsetProvider provider = animationType.calculateOffset(MinecraftClient.getInstance().currentScreen.width, MinecraftClient.getInstance().currentScreen.height, progress, FlowAPI.isClosing());
             provider.apply(context.matrices());
         }
     }

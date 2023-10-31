@@ -55,6 +55,14 @@ public class FlowAPI {
         IS_CLOSING = closing;
     }
 
+    /**
+     * This method is used to determine whether you should calculate the transition animation and apply it.
+     */
+    public static boolean shouldCalculate() {
+        if(FlowAPI.isClosing() && !FlowConfig.get().disableEaseOut) {
+            return true;
+        } else return !FlowConfig.get().disableEaseIn;
+    }
 
     /**
      * This method is used to determine whether the screen is currently undergoing a transition animation.
