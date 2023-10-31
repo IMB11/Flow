@@ -1,4 +1,4 @@
-package dev.mineblock11.flow.api;
+package dev.mineblock11.flow.api.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

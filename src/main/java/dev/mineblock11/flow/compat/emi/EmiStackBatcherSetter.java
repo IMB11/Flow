@@ -1,4 +1,4 @@
-package dev.mineblock11.flow.compat;
+package dev.mineblock11.flow.compat.emi;
 
 public interface EmiStackBatcherSetter {
     int getInitialX();

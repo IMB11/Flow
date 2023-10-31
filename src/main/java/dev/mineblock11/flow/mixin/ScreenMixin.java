@@ -1,10 +1,10 @@
 package dev.mineblock11.flow.mixin;
 
 import dev.mineblock11.flow.api.FlowAPI;
-import dev.mineblock11.flow.config.Easings;
-import dev.mineblock11.flow.config.EntryType;
+import dev.mineblock11.flow.api.animation.Easings;
+import dev.mineblock11.flow.api.animation.AnimationType;
 import dev.mineblock11.flow.config.FlowConfig;
-import dev.mineblock11.flow.config.OffsetProvider;
+import dev.mineblock11.flow.api.animation.OffsetProvider;
 import dev.mineblock11.flow.render.BlurHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -161,7 +161,8 @@ public class ScreenMixin extends Screen {
             return;
         }
 
-        OffsetProvider provider = EntryType.EXPAND.calculateOffset(this.width, this.height, progress, isClosing ? FlowConfig.get().easeOutType : FlowConfig.get().easeInType);
+        AnimationType animationType = AnimationType.getAnimationType(isClosing);
+        OffsetProvider provider = animationType.calculateOffset(this.width, this.height, progress, isClosing);
         provider.apply(context.getMatrices());
 
         context.getMatrices().push();

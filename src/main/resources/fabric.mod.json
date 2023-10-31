@@ -20,6 +20,9 @@
 		],
 		"modmenu": [
 			"dev.mineblock11.flow.compat.ModMenuCompat"
+		],
+		"mru-compat-emi": [
+			"dev.mineblock11.flow.compat.emi.EmiCompat"
 		]
 	},
 	"mixins": [

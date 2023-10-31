@@ -1,4 +1,4 @@
-package dev.mineblock11.flow.config;
+package dev.mineblock11.flow.api.animation;
 
 import java.util.function.Function;
 import static java.lang.Math.*;

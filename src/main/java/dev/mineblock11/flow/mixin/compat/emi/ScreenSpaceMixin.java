@@ -4,10 +4,10 @@ import dev.emi.emi.runtime.EmiDrawContext;
 import dev.emi.emi.screen.EmiScreenManager;
 import dev.emi.emi.screen.StackBatcher;
 import dev.mineblock11.flow.api.FlowAPI;
-import dev.mineblock11.flow.compat.EmiStackBatcherSetter;
-import dev.mineblock11.flow.config.EntryType;
+import dev.mineblock11.flow.compat.emi.EmiStackBatcherSetter;
+import dev.mineblock11.flow.api.animation.AnimationType;
 import dev.mineblock11.flow.config.FlowConfig;
-import dev.mineblock11.flow.config.OffsetProvider;
+import dev.mineblock11.flow.api.animation.OffsetProvider;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,7 +49,8 @@ public abstract class ScreenSpaceMixin {
                     } else if(FlowConfig.get().disableEaseIn) {
                         return;
                     }
-                    OffsetProvider provider = EntryType.EXPAND.calculateOffset(width, height, progress, FlowAPI.isClosing() ? FlowConfig.get().easeOutType : FlowConfig.get().easeInType);
+
+                    OffsetProvider provider = AnimationType.expandTopRight.calculateOffset(width, height, progress, FlowAPI.isClosing());
                     provider.apply((EmiStackBatcherSetter) this.batcher);
                 }
             }

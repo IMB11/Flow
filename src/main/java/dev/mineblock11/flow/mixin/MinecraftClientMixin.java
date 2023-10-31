@@ -1,6 +1,6 @@
 package dev.mineblock11.flow.mixin;
 
-import dev.mineblock11.flow.api.WindowResizeEvent;
+import dev.mineblock11.flow.api.events.WindowResizeEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 import org.spongepowered.asm.mixin.Final;

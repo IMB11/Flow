@@ -1,4 +1,4 @@
-package dev.mineblock11.flow.config;
+package dev.mineblock11.flow.api.animation;
 
 @FunctionalInterface
 public interface OffsetDistributor {

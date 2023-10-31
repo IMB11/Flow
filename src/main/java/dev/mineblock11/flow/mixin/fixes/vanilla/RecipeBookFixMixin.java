@@ -1,9 +1,9 @@
 package dev.mineblock11.flow.mixin.fixes.vanilla;
 
 import dev.mineblock11.flow.api.FlowAPI;
-import dev.mineblock11.flow.config.EntryType;
+import dev.mineblock11.flow.api.animation.AnimationType;
 import dev.mineblock11.flow.config.FlowConfig;
-import dev.mineblock11.flow.config.OffsetProvider;
+import dev.mineblock11.flow.api.animation.OffsetProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
@@ -27,7 +27,7 @@ public class RecipeBookFixMixin {
                 return;
             }
 
-            OffsetProvider provider = EntryType.LEFT.calculateOffset(this.client.currentScreen.width, this.client.currentScreen.height, progress, FlowAPI.isClosing() ? FlowConfig.get().easeOutType : FlowConfig.get().easeInType);
+            OffsetProvider provider = AnimationType.expandTopRight.calculateOffset(this.client.currentScreen.width, this.client.currentScreen.height, progress, FlowAPI.isClosing());
             provider.apply(context.getMatrices());
         }
     }

@@ -1,5 +1,8 @@
 package dev.mineblock11.flow.api;
 
+import dev.mineblock11.flow.compat.emi.EmiCompat;
+import dev.mineblock11.flow.config.FlowConfig;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 
 public class FlowAPI {
@@ -71,6 +74,20 @@ public class FlowAPI {
 
         if(!IN_TRANSITION) {
             TRANSITION_PROGRESS = -1f;
+        }
+    }
+
+    /**
+     * Called when the YACL screen closes and the config is saved.
+     */
+    public static void handleConfigSaving() {
+        FabricLoader loader = FabricLoader.getInstance();
+
+        if(loader.isModLoaded("emi")) {
+            if(FlowConfig.get().easeInAnimationType.name().contains("expand")
+            || FlowConfig.get().easeOutAnimationType.name().contains("expand")) {
+                EmiCompat.displayExpandWarningToast();
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 package dev.mineblock11.flow.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.mineblock11.flow.api.WindowResizeEvent;
+import dev.mineblock11.flow.api.events.WindowResizeEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.GlUniform;

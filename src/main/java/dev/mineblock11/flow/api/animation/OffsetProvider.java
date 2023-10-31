@@ -1,10 +1,7 @@
-package dev.mineblock11.flow.config;
+package dev.mineblock11.flow.api.animation;
 
-import dev.mineblock11.flow.compat.EmiStackBatcherSetter;
+import dev.mineblock11.flow.compat.emi.EmiStackBatcherSetter;
 import net.minecraft.client.util.math.MatrixStack;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
-import oshi.util.tuples.Triplet;
 
 public class OffsetProvider {
     private final float x;
