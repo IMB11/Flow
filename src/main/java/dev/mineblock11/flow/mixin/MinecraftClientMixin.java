@@ -11,10 +11,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public class MinecraftClientMixin {
-    @Shadow @Final private Window window;
+public abstract class MinecraftClientMixin {
+    @Shadow public abstract Window getWindow();
+
     @Inject(method = "onResolutionChanged", at = @At("TAIL"), cancellable = false)
     private void $window_resize_invoker(CallbackInfo ci) {
-        WindowResizeEvent.EVENT.invoker().invoke(this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
+        WindowResizeEvent.EVENT.invoker().invoke(this.getWindow().getFramebufferWidth(), this.getWindow().getFramebufferHeight());
     }
 }

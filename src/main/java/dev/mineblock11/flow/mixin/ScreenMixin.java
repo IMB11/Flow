@@ -5,7 +5,7 @@ import dev.mineblock11.flow.api.animation.Easings;
 import dev.mineblock11.flow.api.animation.AnimationType;
 import dev.mineblock11.flow.config.FlowConfig;
 import dev.mineblock11.flow.api.animation.OffsetProvider;
-import dev.mineblock11.flow.render.BlurHelper;
+import dev.mineblock11.flow.api.rendering.FlowBlurHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,10 +16,12 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HandledScreen.class)
@@ -66,32 +68,15 @@ public class ScreenMixin extends Screen {
         }).start();
     }
 
-    @Unique
-    public void renderBlurShader(DrawContext context, float size, float quality) {
-        var buffer = Tessellator.getInstance().getBuffer();
-        var matrix = context.getMatrices().peek().getPositionMatrix();
-
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        buffer.vertex(matrix, 0, 0, 0).next();
-        buffer.vertex(matrix, 0, this.height, 0).next();
-        buffer.vertex(matrix, this.width, this.height, 0).next();
-        buffer.vertex(matrix, this.width, 0, 0).next();
-
-        BlurHelper.INSTANCE.setParameters(16, quality, size);
-        BlurHelper.INSTANCE.use();
-
-        Tessellator.getInstance().draw();
-    }
-
     @Override
     public void renderBackground(DrawContext context) {
         assert this.client != null;
 
-        if(isClosing && FlowConfig.get().disableEaseOut) {
-            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
+        if (isClosing && FlowConfig.get().disableEaseOut) {
+            renderStaticBg(context);
             return;
         } else if (!isClosing && FlowConfig.get().disableEaseIn) {
-            this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity, FlowConfig.get().bgColorTint.getRGB() & 0xCF000000);
+            renderStaticBg(context);
             return;
         }
 
@@ -100,7 +85,7 @@ public class ScreenMixin extends Screen {
 
             float eased = Easings.easeInOutCubic.eval(progress);
 
-            int alpha = (int) MathHelper.lerp(eased, 0x00, 0xCF);
+            int alpha = MathHelper.lerp(eased, 0x00, 0xCF);
 
             // Convert to color specified in config using the alpha from above.
             // format is 0xAARRGGBB
@@ -116,6 +101,12 @@ public class ScreenMixin extends Screen {
         }
     }
 
+    @Unique void renderStaticBg(DrawContext context) {
+        var alpha = 0xCF;
+        var AARRGGBB = (alpha << 24) | (FlowConfig.get().bgColorTint.getRGB() & 0x00FFFFFF);
+        this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity * 16, AARRGGBB);
+    }
+
     @Unique
     private void renderBgEffects(DrawContext context, float blurIntensity, int color) {
         if(!FlowConfig.get().disableBgTint) {
@@ -123,7 +114,7 @@ public class ScreenMixin extends Screen {
         }
 
         if(!FlowConfig.get().disableBgBlur) {
-            this.renderBlurShader(context, blurIntensity * 16, 16);
+            FlowBlurHelper.apply(this.width, this.height, context, blurIntensity, 16);
         }
     }
 

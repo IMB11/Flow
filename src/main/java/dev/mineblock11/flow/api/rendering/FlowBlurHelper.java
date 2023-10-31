@@ -1,4 +1,4 @@
-package dev.mineblock11.flow.render;
+package dev.mineblock11.flow.api.rendering;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.mineblock11.flow.api.events.WindowResizeEvent;
@@ -7,6 +7,10 @@ import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.SimpleFramebuffer;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.Window;
 import org.lwjgl.opengl.GL30;
 
@@ -14,8 +18,23 @@ import org.lwjgl.opengl.GL30;
  *
  * Credit to glisco for <a href="https://github.com/wisp-forest/owo-lib/blob/1.20/src/main/java/io/wispforest/owo/shader/BlurProgram.java">BlurProgram</a>
  */
-public class BlurHelper {
-    public static BlurHelper INSTANCE = new BlurHelper();
+public class FlowBlurHelper {
+    public static void apply(float width, float height, DrawContext context, float size, float quality) {
+        var buffer = Tessellator.getInstance().getBuffer();
+        var matrix = context.getMatrices().peek().getPositionMatrix();
+
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        buffer.vertex(matrix, 0, 0, 0).next();
+        buffer.vertex(matrix, 0, height, 0).next();
+        buffer.vertex(matrix, width, height, 0).next();
+        buffer.vertex(matrix, width, 0, 0).next();
+
+        FlowBlurHelper.INSTANCE.setParameters(16, quality, size);
+        FlowBlurHelper.INSTANCE.use();
+
+        Tessellator.getInstance().draw();
+    }
+    public static FlowBlurHelper INSTANCE = new FlowBlurHelper();
     public boolean loaded = false;
     private GlUniform inputResolution;
     private GlUniform directions;
@@ -24,7 +43,7 @@ public class BlurHelper {
     private Framebuffer input;
     private ShaderProgram backingProgram;
 
-    public BlurHelper() {
+    public FlowBlurHelper() {
         WindowResizeEvent.EVENT.register((width, height) -> {
             if (this.input == null) return;
             this.input.resize(width, height, MinecraftClient.IS_SYSTEM_MAC);

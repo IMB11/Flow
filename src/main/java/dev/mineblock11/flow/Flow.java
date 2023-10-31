@@ -1,7 +1,7 @@
 package dev.mineblock11.flow;
 
 import dev.mineblock11.flow.config.FlowConfig;
-import dev.mineblock11.flow.render.BlurHelper;
+import dev.mineblock11.flow.api.rendering.FlowBlurHelper;
 import net.fabricmc.api.ClientModInitializer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
@@ -18,7 +18,7 @@ public class Flow implements ClientModInitializer {
 
 		CoreShaderRegistrationCallback.EVENT.register(context -> {
 			context.register(new Identifier("flow", "blur"), VertexFormats.POSITION, shaderProgram -> {
-				BlurHelper.INSTANCE.load(shaderProgram);
+				FlowBlurHelper.INSTANCE.load(shaderProgram);
 			});
 		});
 	}
