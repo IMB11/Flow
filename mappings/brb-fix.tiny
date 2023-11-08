@@ -1,0 +1,5 @@
+tiny	2	0	intermediary	named
+c	marsh/town/brb/smithingtable/SmithingRecipeBookComponent	marsh/town/brb/smithingtable/SmithingRecipeBookComponent
+	m	()Z	isOpen	isOpen$fixConflict
+c	marsh/town/brb/brewingstand/BrewingRecipeBookComponent	marsh/town/brb/brewingstand/BrewingRecipeBookComponent
+	m	()Z	isOpen	isOpen$fixConflict

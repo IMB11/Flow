@@ -159,10 +159,12 @@ public abstract class ScreenMixin extends Screen {
 
             if(FlowConfig.get().disableEaseOut || isDisabledScreen()) {
                 context.getMatrices().push();
+                this.drawBackground(context, delta, mouseX, mouseY);
                 return;
             }
         } else if(FlowConfig.get().disableEaseIn || isDisabledScreen()) {
             context.getMatrices().push();
+            this.drawBackground(context, delta, mouseX, mouseY);
             return;
         }
 
