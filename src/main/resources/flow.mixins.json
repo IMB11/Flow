@@ -10,6 +10,7 @@
     "MinecraftClientMixin",
     "ScreenMixin",
     "ToastManagerEntryMixin",
+    "compat.brb.BrewingRecipeBookComponentMixin",
     "compat.emi.ScreenSpaceMixin",
     "compat.emi.SidebarPanelMixin",
     "compat.emi.StackBatcherAccessor",
