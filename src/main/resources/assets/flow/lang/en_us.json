@@ -4,7 +4,7 @@
   "flow.config.category.compat": "Compatability",
 
   "flow.config.group.easeIn": "Ease In",
-  "flow.config.group.easeIn.description": "Configuration options related to the opening of the inventory.",
+  "flow.config.group.easeIn.desc": "Configuration options related to the opening of the inventory.",
   "flow.config.disableEaseIn": "Disable Ease In",
   "flow.config.disableEaseIn.desc": "Disable the ease in animation when the inventory is opened.",
   "flow.config.easeInType": "Easing Type",
@@ -15,7 +15,7 @@
   "flow.config.easeInDuration.desc": "The duration of the ease in animation when opening the inventory.",
 
   "flow.config.group.easeOut": "Ease Out",
-  "flow.config.group.easeOut.description": "Configuration options related to the closing of the inventory.",
+  "flow.config.group.easeOut.desc": "Configuration options related to the closing of the inventory.",
   "flow.config.disableEaseOut": "Disable Ease Out",
   "flow.config.disableEaseOut.desc": "Disable the ease out animation when the inventory is closed.",
   "flow.config.easeOutType": "Easing Type",

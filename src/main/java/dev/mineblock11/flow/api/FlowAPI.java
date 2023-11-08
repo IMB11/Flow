@@ -89,6 +89,8 @@ public class FlowAPI {
      * Called when the YACL screen closes and the config is saved.
      */
     public static void handleConfigSaving() {
+        FlowConfig.CONFIG_CLASS_HANDLER.save();
+
         FabricLoader loader = FabricLoader.getInstance();
 
         if(loader.isModLoaded("emi")) {
