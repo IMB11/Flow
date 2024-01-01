@@ -12,9 +12,9 @@ public class ExampleMod implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Hello Fabric world!");
 
-		/*?<1.20.2 {?*//*
-			LOGGER.info("Hello <1.20.2!");
-		/*?}?*/
+		/*? if <1.20.2 {*//*
+			LOGGER.info("Hello 1.20.1!");
+		*//*?}*/
 
 	}
 }
