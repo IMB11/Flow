@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class RecipeBookFixMixin {
     @Shadow protected MinecraftClient client;
 
-    /*? if <1.20.2 {*/
+    /*? if <1.20.2 {*//*
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V", ordinal = 0))
     public void $apply_transition(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if(FlowAPI.isInTransition()) {
@@ -29,5 +29,5 @@ public class RecipeBookFixMixin {
             provider.apply(context.getMatrices());
         }
     }
-    /*? } */
+    *//*? } */
 }

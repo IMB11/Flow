@@ -32,9 +32,9 @@ public abstract class ScreenMixin extends Screen {
     @Unique
     public volatile boolean finishedCloseAnimation = false;
 
-    /*? if >=1.20.2 {*//*
+    /*? if >=1.20.2 {*/
     @Shadow protected abstract void drawBackground(DrawContext context, float delta, int mouseX, int mouseY);
-    *//*? } */
+    /*? } */
 
     protected ScreenMixin(Text title) {
         super(title);
@@ -76,11 +76,11 @@ public abstract class ScreenMixin extends Screen {
     }
 
     @Override
-    /*? if <1.20.2 {*/
+    /*? if <1.20.2 {*//*
     public void renderBackground(DrawContext context) {
-    /*? } else { *//*
+    *//*? } else { */
     public void renderInGameBackground(DrawContext context) {
-    *//*? } */
+    /*? } */
         assert this.client != null;
 
         if (isClosing && FlowConfig.get().disableEaseOut || isDisabledScreen()) {
@@ -129,14 +129,14 @@ public abstract class ScreenMixin extends Screen {
         }
     }
 
-    /*? if <1.20.2 {*/
+    /*? if <1.20.2 {*//*
     @Inject(method = "render", at = @At("HEAD"))
     private void $render_animation(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-    /*? } else { *//*
+    *//*? } else { */
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
     private void $render_animation(Screen instance, DrawContext context, int mouseX, int mouseY, float delta) {
         this.renderInGameBackground(context);
-    *//*? } */
+    /*? } */
 
         elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
 
@@ -174,14 +174,14 @@ public abstract class ScreenMixin extends Screen {
         OffsetProvider provider = animationType.calculateOffset(this.width, this.height, progress, isClosing);
         provider.apply(context.getMatrices());
 
-        /*? if <1.20.2 {*/
+        /*? if <1.20.2 {*//*
         context.getMatrices().push();
-        /*? } else {*//*
+        *//*? } else {*/
         this.drawBackground(context, delta, mouseX, mouseY);
 
         for (Drawable drawable : ((ScreenAccessor) this).getDrawables()) {
             drawable.render(context, mouseX, mouseY, delta);
         }
-        *//*? } */
+        /*? } */
     }
 }
