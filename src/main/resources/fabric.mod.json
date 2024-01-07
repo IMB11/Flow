@@ -1,27 +1,37 @@
 {
-  "schemaVersion": 1,
-  "id": "example",
-  "version": "${mod_version}",
-  "name": "Example Mod",
-  "description": "Lorum ipsum nadara un petit mozrango.",
-  "authors": [
-    "You!"
-  ],
-  "license": "MIT",
-  "icon": "assets/example/icon.png",
-  "contact": {
-    "homepage": "https://your.site/",
-    "sources": "https://github.com/your/repo",
-    "issues": "https://github.com/your/repo"
-  },
-  "environment": "*",
-  "accessWidener" : "example.accesswidener",
-  "mixins": [
-    "example.mixins.json"
-  ],
-  "depends": {
-    "fabric": "*",
-    "fabricloader": "*",
-    "minecraft": "${target_minecraft}"
-  }
+	"schemaVersion": 1,
+	"id": "flow",
+	"version": "${mod_version}",
+	"name": "Flow",
+	"description": "Inventory open/close transitions.",
+	"authors": [
+		"IMB11 (mineblock11)"
+	],
+	"contact": {
+		"homepage": "https://imb11.dev/",
+		"sources": "https://github.com/IMB11/Flow"
+	},
+	"license": "LGPL-3.0",
+	"icon": "assets/flow/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"dev.imb11.flow.Flow"
+		],
+		"modmenu": [
+			"dev.imb11.flow.compat.ModMenuCompat"
+		],
+		"mru-compat-emi": [
+			"dev.imb11.flow.compat.emi.EmiCompat"
+		]
+	},
+	"mixins": [
+		"flow.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "${target_minecraft}",
+		"fabric-api": "*",
+		"mru": "*"
+	}
 }

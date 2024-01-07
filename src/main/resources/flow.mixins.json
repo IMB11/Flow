@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "dev.imb11.flow.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "MinecraftClientMixin",
+    "ScreenAccessor",
+    "ScreenMixin",
+    "ToastManagerEntryMixin",
+    "compat.emi.ScreenSpaceMixin",
+    "compat.emi.SidebarPanelMixin",
+    "compat.emi.StackBatcherAccessor",
+    "fixes.vanilla.CartographyFixMixin",
+    "fixes.vanilla.GrindstoneFixMixin",
+    "fixes.vanilla.LoomFixMixin",
+    "fixes.vanilla.RecipeBookFixMixin",
+    "fixes.vanilla.StonecutterFixMixin"
+  ]
+}

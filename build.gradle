@@ -4,7 +4,7 @@ plugins {
 }
 
 version =  property("mod.version") + "+" + stonecutter.current.version
-group = "com.example"
+group = "dev.imb11"
 
 base {
     archivesName = property("mod.name")
@@ -12,7 +12,23 @@ base {
 
 repositories {
     mavenCentral()
-    mavenLocal()
+    maven { url "https://maven.terraformersmc.com/releases" }
+    maven { url "https://maven.isxander.dev/releases" }
+    maven { url "https://jitpack.io" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://maven.quiltmc.org/repository/release" }
+    maven { url "https://maven.mineblock11.dev/releases" }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
@@ -21,6 +37,17 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${property('deps.fabric_loader')}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${property('deps.fabric_api')}"
+
+    include modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${property('deps.yacl')}")
+
+    modImplementation "com.mineblock11:MRU:${property('deps.mru')}"
+
+    //	Compatability mods.
+    modLocalRuntime modCompileOnly("com.terraformersmc:modmenu:${property('runtime.modmenu')}")
+    modCompileOnly("dev.emi:emi-fabric:${property('runtime.emi')}")
+    modLocalRuntime modCompileOnly("maven.modrinth:brb:${property('runtime.brb')}")
+    modLocalRuntime("maven.modrinth:architectury-api:${property('runtime.architectury')}")
+    modLocalRuntime("maven.modrinth:cloth-config:${property('runtime.cloth')}")
 }
 
 if (stonecutter.current.active) { // run configs for non-active version would be invalid
@@ -31,10 +58,6 @@ if (stonecutter.current.active) { // run configs for non-active version would be
         }
     }
 }
-
-//loom {
-//    accessWidenerPath = file("../../src/main/resources/<MOD_ID>.accesswidener")
-//}
 
 processResources {
     filesMatching("fabric.mod.json") {
