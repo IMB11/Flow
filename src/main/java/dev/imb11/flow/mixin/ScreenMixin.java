@@ -47,7 +47,7 @@ public abstract class ScreenMixin extends Screen {
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
-        if(FlowConfig.get().disableEaseOut || isDisabledScreen()) return;
+        if(FlowConfig.get().disableEaseOut || isDisabledScreen() || FlowAPI.getNextScreen() instanceof HandledScreen) return;
 
         ci.cancel();
         if(isClosing) return;

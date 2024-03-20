@@ -50,14 +50,12 @@ dependencies {
     modLocalRuntime("maven.modrinth:cloth-config:${property('runtime.cloth')}")
 }
 
-if (stonecutter.current.active) { // run configs for non-active version would be invalid
     loom {
         runConfigs.all {
             ideConfigGenerated = true // generate IDE tasks for running client, server and testmod, datagen if those are present
             runDir "../../run" // use a global run directory for all versions
         }
     }
-}
 
 processResources {
     filesMatching("fabric.mod.json") {

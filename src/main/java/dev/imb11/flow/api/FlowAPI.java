@@ -3,13 +3,19 @@ package dev.imb11.flow.api;
 import dev.imb11.flow.compat.emi.EmiCompat;
 import dev.imb11.flow.config.FlowConfig;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 public class FlowAPI {
     /**
      * This boolean is used to determine whether the screen is currently undergoing a transition animation.
      */
     protected static boolean IN_TRANSITION = false;
+
+    protected static @Nullable Screen nextScreen = null;
+    protected static @Nullable Screen previousScreen = null;
 
     /**
      * This float is used to determine the progress of the transition animation.
@@ -56,12 +62,16 @@ public class FlowAPI {
     }
 
     /**
-     * This method is used to determine whether you should calculate the transition animation and apply it.
+     * This method is used to determine whether you should avoid calculating the transition.
      */
-    public static boolean shouldCalculate() {
-        if(FlowAPI.isClosing() && !FlowConfig.get().disableEaseOut) {
+    public static boolean shouldAvoidCalculation() {
+        if(nextScreen instanceof HandledScreen && previousScreen instanceof HandledScreen && FlowConfig.get().disableCrossInventoryAnimations) {
             return true;
-        } else return !FlowConfig.get().disableEaseIn;
+        }
+
+        if(FlowAPI.isClosing() && !FlowConfig.get().disableEaseOut) {
+            return false;
+        } else return FlowConfig.get().disableEaseIn;
     }
 
     /**
@@ -99,5 +109,21 @@ public class FlowAPI {
                 EmiCompat.displayExpandWarningToast();
             }
         }
+    }
+
+    public static Screen getNextScreen() {
+        return nextScreen;
+    }
+
+    public static void setNextScreen(Screen nextScreen) {
+        FlowAPI.nextScreen = nextScreen;
+    }
+
+    public static Screen getPreviousScreen() {
+        return previousScreen;
+    }
+
+    public static void setPreviousScreen(Screen previousScreen) {
+        FlowAPI.previousScreen = previousScreen;
     }
 }

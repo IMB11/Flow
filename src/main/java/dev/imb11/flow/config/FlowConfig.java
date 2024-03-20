@@ -44,9 +44,10 @@ public class FlowConfig {
     public boolean disableBgTint = false;
 
     @SerialEntry
-    public List<String> disabledScreens = List.of(
-            "top.theillusivec4.curios.client.gui.CuriosScreen"
-    );
+    public List<String> disabledScreens = List.of("top.theillusivec4.curios.client.gui.CuriosScreen");
+
+    @SerialEntry
+    public boolean disableCrossInventoryAnimations = true;
 
     public static FlowConfig get() {
         return CONFIG_CLASS_HANDLER.instance();
@@ -198,6 +199,13 @@ public class FlowConfig {
                     .initial("ScreenClassName")
                     .build();
 
+            var crossInventoryAnimations = Option.<Boolean>createBuilder()
+                    .name(HELPER.getName("disableCrossInventoryAnimations"))
+                    .description(HELPER.description("disableCrossInventoryAnimations"))
+                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter())
+                    .binding(defaults.disableCrossInventoryAnimations, () -> config.disableCrossInventoryAnimations, (val) -> config.disableCrossInventoryAnimations = val)
+                    .build();
+
             return builder
                     .title(Text.translatable("flow.config.title"))
                     .save(FlowAPI::handleConfigSaving)
@@ -214,6 +222,7 @@ public class FlowConfig {
                     .category(ConfigCategory.createBuilder()
                             .name(Text.translatable("flow.config.category.compat"))
                             .option(disabledScreens)
+                            .option(crossInventoryAnimations)
                             .build());
         });
     }

@@ -33,7 +33,7 @@ public abstract class ScreenSpaceMixin {
                 int height = MinecraftClient.getInstance().getWindow().getFramebufferHeight();
                 int width = MinecraftClient.getInstance().getWindow().getFramebufferWidth();
 
-                if (!FlowAPI.shouldCalculate()) {
+                if (FlowAPI.shouldAvoidCalculation()) {
                     return;
                 }
 

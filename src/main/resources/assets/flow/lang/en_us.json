@@ -61,6 +61,8 @@
 
   "flow.config.disabledScreens": "Disabled Screens",
   "flow.config.disabledScreens.desc": "A list of screens to disable the inventory on. The value of each list item should be the screen's class name.",
+  "flow.config.disableCrossInventoryAnimations": "Disable Cross Inventory Animations",
+  "flow.config.disableCrossInventoryAnimations.desc": "Disable the animations when opening an inventory from another inventory. Useful for servers like Hypixel where many GUIs are inside of inventories and the animations can cause issues.",
 
   "flow.toast.emi.title": "Warning, EMI installed.",
   "flow.toast.emi.description": "EMI does not work well with expand animations, it's recommended to use the sliding animations."

@@ -15,7 +15,7 @@ public class ToastManagerEntryMixin {
     @Inject(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V"), cancellable = false)
     public void $negate_transition(int x, DrawContext context, CallbackInfoReturnable<Boolean> cir) {
         if(FlowAPI.isInTransition()) {
-            if(!FlowAPI.shouldCalculate()) return;
+            if(FlowAPI.shouldAvoidCalculation()) return;
 
             AnimationType animationType = AnimationType.getAnimationType(FlowAPI.isClosing());
             OffsetProvider offsetProvider = animationType.calculateOffset(MinecraftClient.getInstance().currentScreen.width, MinecraftClient.getInstance().currentScreen.height, FlowAPI.getTransitionProgress(), FlowAPI.isClosing());

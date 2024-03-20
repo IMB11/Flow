@@ -29,7 +29,7 @@ public class SidebarPanelMixin {
         if (FlowAPI.isInTransition()) {
             var progress = FlowAPI.getTransitionProgress();
 
-            if (!FlowAPI.shouldCalculate()) {
+            if (FlowAPI.shouldAvoidCalculation()) {
                 return;
             }
 
