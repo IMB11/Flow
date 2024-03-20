@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
         "folk.sisby.inventory_tabs.tabs.VehicleInventoryTab",
         "folk.sisby.inventory_tabs.tabs.PlayerInventoryTab",
         "folk.sisby.inventory_tabs.tabs.ItemTab",
-        "folk.sisby.inventory_tabs.tabs.EntityTab"})
+        "folk.sisby.inventory_tabs.tabs.EntityTab"}, remap = false)
 public class TabsMixin {
     @Inject(method = "open", cancellable = false, at = @At("HEAD"))
     public void $flow_open_tab(CallbackInfo ci) {
