@@ -14,9 +14,6 @@ public class FlowAPI {
      */
     protected static boolean IN_TRANSITION = false;
 
-    protected static @Nullable Screen nextScreen = null;
-    protected static @Nullable Screen previousScreen = null;
-
     /**
      * This float is used to determine the progress of the transition animation.
      * If the float is -1, the screen is not undergoing a transition animation.
@@ -27,6 +24,9 @@ public class FlowAPI {
      * This boolean is used to determine whether the screen is currently closing.
      */
     protected static boolean IS_CLOSING = false;
+
+    @ApiStatus.Internal
+    public static boolean DISABLE_TEMPORARILY = false;
 
     /**
      * This method is used to get the progress of the transition animation.
@@ -61,11 +61,15 @@ public class FlowAPI {
         IS_CLOSING = closing;
     }
 
+    public static void toggleTemporaryDisable() {
+        DISABLE_TEMPORARILY = !DISABLE_TEMPORARILY;
+    }
+
     /**
      * This method is used to determine whether you should avoid calculating the transition.
      */
     public static boolean shouldAvoidCalculation() {
-        if(nextScreen instanceof HandledScreen && previousScreen instanceof HandledScreen && FlowConfig.get().disableCrossInventoryAnimations) {
+        if(DISABLE_TEMPORARILY) {
             return true;
         }
 
@@ -109,21 +113,5 @@ public class FlowAPI {
                 EmiCompat.displayExpandWarningToast();
             }
         }
-    }
-
-    public static Screen getNextScreen() {
-        return nextScreen;
-    }
-
-    public static void setNextScreen(Screen nextScreen) {
-        FlowAPI.nextScreen = nextScreen;
-    }
-
-    public static Screen getPreviousScreen() {
-        return previousScreen;
-    }
-
-    public static void setPreviousScreen(Screen previousScreen) {
-        FlowAPI.previousScreen = previousScreen;
     }
 }

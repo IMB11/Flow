@@ -10,7 +10,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,14 +43,24 @@ public abstract class ScreenMixin extends Screen {
         super(title);
     }
 
+    @Unique
+    public boolean temp_disableEaseIn = false;
+
     @Inject(method = "init", at = @At("HEAD"), cancellable = false)
     private void $mark_open_animation(CallbackInfo ci) {
         FlowAPI.setInTransition(true);
+        if(FlowAPI.DISABLE_TEMPORARILY) {
+            temp_disableEaseIn = true;
+            boolean inCreative = ((Object) this) instanceof InventoryScreen;
+            if (!((inCreative && this.client.interactionManager.hasCreativeInventory()))) {
+                FlowAPI.toggleTemporaryDisable();
+            }
+        }
     }
 
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
-        if(FlowConfig.get().disableEaseOut || isDisabledScreen() || FlowAPI.getNextScreen() instanceof HandledScreen) return;
+        if(isDisabledScreen() || FlowAPI.shouldAvoidCalculation()) return;
 
         ci.cancel();
         if(isClosing) return;
@@ -86,7 +99,7 @@ public abstract class ScreenMixin extends Screen {
         if (isClosing && FlowConfig.get().disableEaseOut || isDisabledScreen()) {
             renderStaticBg(context);
             return;
-        } else if (!isClosing && FlowConfig.get().disableEaseIn) {
+        } else if (!isClosing && (FlowConfig.get().disableEaseIn || temp_disableEaseIn)) {
             renderStaticBg(context);
             return;
         }
@@ -165,7 +178,7 @@ public abstract class ScreenMixin extends Screen {
                 context.getMatrices().push();
                 return;
             }
-        } else if(FlowConfig.get().disableEaseIn || isDisabledScreen()) {
+        } else if(FlowConfig.get().disableEaseIn || isDisabledScreen() || temp_disableEaseIn) {
             context.getMatrices().push();
             return;
         }

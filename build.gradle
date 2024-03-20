@@ -18,6 +18,8 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url "https://maven.quiltmc.org/repository/release" }
     maven { url "https://maven.mineblock11.dev/releases" }
+    maven { url "https://repo.sleeping.town/" }
+    maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
     exclusiveContent {
         forRepository {
             maven {
@@ -48,14 +50,23 @@ dependencies {
     modLocalRuntime modCompileOnly("maven.modrinth:brb:${property('runtime.brb')}")
     modLocalRuntime("maven.modrinth:architectury-api:${property('runtime.architectury')}")
     modLocalRuntime("maven.modrinth:cloth-config:${property('runtime.cloth')}")
+
+    if (stonecutter.current.version == "1.20.1") {
+        modImplementation "folk.sisby:inventory-tabs:1.1.8+1.20"
+    }
 }
 
+if (stonecutter.current.active) {
     loom {
         runConfigs.all {
-            ideConfigGenerated = true // generate IDE tasks for running client, server and testmod, datagen if those are present
+            ideConfigGenerated = true
+            // generate IDE tasks for running client, server and testmod, datagen if those are present
             runDir "../../run" // use a global run directory for all versions
         }
     }
+}
+
+
 
 processResources {
     filesMatching("fabric.mod.json") {

@@ -22,7 +22,7 @@ public class RecipeBookFixMixin {
         if(FlowAPI.isInTransition()) {
             var progress = FlowAPI.getTransitionProgress();
 
-            if(!FlowAPI.shouldCalculate()) return;
+            if(FlowAPI.shouldAvoidCalculation()) return;
 
             AnimationType animationType = AnimationType.getAnimationType(FlowAPI.isClosing());
             OffsetProvider provider = animationType.calculateOffset(this.client.currentScreen.width, this.client.currentScreen.height, progress, FlowAPI.isClosing());
