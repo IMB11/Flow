@@ -1,0 +1,7 @@
+accessWidener   v2  named
+
+# Mouse Class (ScreenMixin usage)
+accessible field net/minecraft/client/Mouse hasResolutionChanged Z
+accessible field net/minecraft/client/Mouse y D
+accessible field net/minecraft/client/Mouse x D
+accessible field net/minecraft/client/Mouse cursorLocked Z

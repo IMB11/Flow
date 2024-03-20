@@ -14,6 +14,7 @@
 	"license": "ARR",
 	"icon": "assets/flow/icon.png",
 	"environment": "*",
+	"accessWidener": "flow.accesswidener",
 	"entrypoints": {
 		"client": [
 			"dev.imb11.flow.Flow"

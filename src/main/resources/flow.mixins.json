@@ -11,14 +11,14 @@
         "ScreenAccessor",
         "ScreenMixin",
         "ToastManagerEntryMixin",
-        "compat.inventorytabs.TabsMixin",
         "compat.emi.ScreenSpaceMixin",
         "compat.emi.SidebarPanelMixin",
         "compat.emi.StackBatcherAccessor",
+        "compat.inventorytabs.TabsMixin",
         "fixes.vanilla.CartographyFixMixin",
         "fixes.vanilla.GrindstoneFixMixin",
         "fixes.vanilla.LoomFixMixin",
         "fixes.vanilla.RecipeBookFixMixin",
         "fixes.vanilla.StonecutterFixMixin"
-  ]
+    ]
 }

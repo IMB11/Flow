@@ -13,6 +13,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -58,6 +60,25 @@ public abstract class ScreenMixin extends Screen {
         }
     }
 
+    @Unique
+    public void safelyUnlockMouse() {
+        assert this.client != null;
+        if (this.client.isWindowFocused()) {
+            if (!this.client.mouse.isCursorLocked()) {
+                if (!MinecraftClient.IS_SYSTEM_MAC) {
+                    KeyBinding.updatePressedStates();
+                }
+
+                this.client.mouse.cursorLocked = true;
+                this.client.mouse.x = (double) this.client.getWindow().getWidth() / 2;
+                this.client.mouse.y = (double) this.client.getWindow().getHeight() / 2;
+                InputUtil.setCursorParameters(this.client.getWindow().getHandle(), 212995, this.client.mouse.x, this.client.mouse.y);
+                this.client.attackCooldown = 10000;
+                this.client.mouse.hasResolutionChanged = true;
+            }
+        }
+    }
+
     @Inject(method = "close", at = @At("HEAD"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
         if(isDisabledScreen() || FlowAPI.shouldAvoidCalculation()) return;
@@ -67,6 +88,9 @@ public abstract class ScreenMixin extends Screen {
         FlowAPI.setInTransition(true);
         elapsed = 0f;
         isClosing = true;
+        this.client.getSoundManager().resumeAll();
+        this.safelyUnlockMouse();
+
         new Thread(() -> {
             while (!finishedCloseAnimation) {
                 Thread.onSpinWait();
