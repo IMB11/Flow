@@ -11,7 +11,7 @@
 		"homepage": "https://imb11.dev/",
 		"sources": "https://github.com/IMB11/Flow"
 	},
-	"license": "LGPL-3.0",
+	"license": "ARR",
 	"icon": "assets/flow/icon.png",
 	"environment": "*",
 	"entrypoints": {
