@@ -208,21 +208,25 @@ public abstract class ScreenMixin extends Screen {
             FlowAPI.setInTransition(false);
         }
 
+        boolean shouldApply = true;
         if(isClosing) {
             this.finishedCloseAnimation = progress == 0;
 
             if(FlowConfig.get().disableEaseOut || isDisabledScreen()) {
                 context.getMatrices().push();
-                return;
+
+                shouldApply = false;
             }
         } else if(FlowConfig.get().disableEaseIn || isDisabledScreen() || temp_disableEaseIn) {
             context.getMatrices().push();
-            return;
+            shouldApply = false;
         }
 
-        AnimationType animationType = AnimationType.getAnimationType(isClosing);
-        OffsetProvider provider = animationType.calculateOffset(this.width, this.height, progress, isClosing);
-        provider.apply(context.getMatrices());
+        if(shouldApply) {
+            AnimationType animationType = AnimationType.getAnimationType(isClosing);
+            OffsetProvider provider = animationType.calculateOffset(this.width, this.height, progress, isClosing);
+            provider.apply(context.getMatrices());
+        }
 
         /*? if <1.20.2 {*//*
         context.getMatrices().push();

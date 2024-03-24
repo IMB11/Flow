@@ -5,7 +5,9 @@ import dev.imb11.flow.api.events.WindowResizeEvent;
 import dev.imb11.flow.config.FlowConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.Window;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +30,11 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method="setScreen", at = @At("HEAD"), cancellable = false)
     private void $set_screen(Screen screen, CallbackInfo ci) {
-        if(screen instanceof HandledScreen && currentScreen instanceof HandledScreen && !FlowAPI.DISABLE_TEMPORARILY && FlowConfig.get().disableCrossInventoryAnimations) {
+        if(screen instanceof HandledScreen &&
+                currentScreen instanceof HandledScreen &&
+                !(screen instanceof CreativeInventoryScreen) &&
+                !FlowAPI.DISABLE_TEMPORARILY &&
+                FlowConfig.get().disableCrossInventoryAnimations) {
             FlowAPI.toggleTemporaryDisable();
         }
     }
