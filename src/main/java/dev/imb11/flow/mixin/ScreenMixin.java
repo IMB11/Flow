@@ -16,8 +16,11 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Iterator;
 
@@ -40,6 +44,8 @@ public abstract class ScreenMixin extends Screen {
     /*? if >=1.20.2 {*/
     @Shadow protected abstract void drawBackground(DrawContext context, float delta, int mouseX, int mouseY);
     /*? } */
+
+    @Shadow @Final protected ScreenHandler handler;
 
     protected ScreenMixin(Text title) {
         super(title);
@@ -163,6 +169,13 @@ public abstract class ScreenMixin extends Screen {
 
         if(!FlowConfig.get().disableBgBlur) {
             FlowBlurHelper.apply(this.width, this.height, context, blurIntensity, 16);
+        }
+    }
+
+    @Inject(method = "isPointOverSlot", at = @At("HEAD"), cancellable = true)
+    private void $isPointOverSlot(Slot slot, double pointX, double pointY, CallbackInfoReturnable<Boolean> cir) {
+        if(isClosing) {
+            cir.setReturnValue(false);
         }
     }
 

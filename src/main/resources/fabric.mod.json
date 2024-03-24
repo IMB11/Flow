@@ -34,5 +34,8 @@
 		"minecraft": "${target_minecraft}",
 		"fabric-api": "*",
 		"mru": "*"
+	},
+	"suggests": {
+		"invmove": "*"
 	}
 }
