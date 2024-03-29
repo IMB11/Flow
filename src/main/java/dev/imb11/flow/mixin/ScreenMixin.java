@@ -69,7 +69,7 @@ public abstract class ScreenMixin extends Screen {
     @Unique
     public void safelyUnlockMouse() {
         assert this.client != null;
-        if(!FlowConfig.get().disableMouseMovement) return;
+        if(FlowConfig.get().disableMouseMovement) return;
         if (this.client.isWindowFocused()) {
             if (!this.client.mouse.isCursorLocked()) {
                 if (!MinecraftClient.IS_SYSTEM_MAC) {
