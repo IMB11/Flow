@@ -49,6 +49,9 @@ public class FlowConfig {
     @SerialEntry
     public boolean disableCrossInventoryAnimations = true;
 
+    @SerialEntry
+    public boolean disableMouseMovement = false;
+
     public static FlowConfig get() {
         return CONFIG_CLASS_HANDLER.instance();
     }
@@ -206,11 +209,19 @@ public class FlowConfig {
                     .binding(defaults.disableCrossInventoryAnimations, () -> config.disableCrossInventoryAnimations, (val) -> config.disableCrossInventoryAnimations = val)
                     .build();
 
+            var disableMouseMovement = Option.<Boolean>createBuilder()
+                    .name(HELPER.getName("disableMouseMovement"))
+                    .description(HELPER.description("disableMouseMovement"))
+                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter())
+                    .binding(defaults.disableMouseMovement, () -> config.disableMouseMovement, (val) -> config.disableMouseMovement = val)
+                    .build();
+
             return builder
                     .title(Text.translatable("flow.config.title"))
                     .save(FlowAPI::handleConfigSaving)
                     .category(ConfigCategory.createBuilder()
                             .name(Text.translatable("flow.config.category.general"))
+                            .option(disableMouseMovement)
                             .group(easeInOptionGroup)
                             .group(easeOutOptionGroup)
                             .options(List.of(
