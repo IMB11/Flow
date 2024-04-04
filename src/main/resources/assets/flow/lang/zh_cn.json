@@ -48,10 +48,10 @@
   "flow.config.easingType.easeInOutBack": "越界返回",
   "flow.config.easingType.easeInOutElastic": "弹性",
 
-  "flow.config.animationType.slideUp": "上滑",
-  "flow.config.animationType.slideDown": "下滑",
-  "flow.config.animationType.slideLeft": "左滑",
-  "flow.config.animationType.slideRight": "右滑",
+  "flow.config.animationType.slideUp": "上滑入",
+  "flow.config.animationType.slideDown": "下滑入",
+  "flow.config.animationType.slideLeft": "左滑入",
+  "flow.config.animationType.slideRight": "右滑入",
   "flow.config.animationType.expandMiddleLeft": "左中展开",
   "flow.config.animationType.expandMiddleCenter": "中间展开",
   "flow.config.animationType.expandMiddleRight": "右中展开",
@@ -68,5 +68,5 @@
   "flow.config.disableCrossInventoryAnimations.desc": "禁用从一个物品栏打开另一个物品栏的动画。对于类似Hypixel这样拥有多个物品栏菜单嵌套的服务器很有用，因为这可能造成动画问题。",
 
   "flow.toast.emi.title": "警告，检测到EMI",
-  "flow.toast.emi.description": "EMI在使用展开动画时效果不佳，建议使用划入动画。"
+  "flow.toast.emi.description": "EMI在使用展开动画时效果不佳，建议使用滑入动画。"
 }
