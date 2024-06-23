@@ -210,9 +210,12 @@ public class FlowConfig {
                     .title(Text.translatable("flow.config.title"))
                     .save(FlowAPI::handleConfigSaving)
                     .category(ConfigCategory.createBuilder()
-                            .name(Text.translatable("flow.config.category.general"))
+                            .name(Text.translatable("flow.config.category.easings"))
                             .group(easeInOptionGroup)
                             .group(easeOutOptionGroup)
+                            .build())
+                    .category(ConfigCategory.createBuilder()
+                            .name(Text.translatable("flow.config.category.background"))
                             .options(List.of(
                                     disableBgTintOption,
                                     bgColorTintOption,

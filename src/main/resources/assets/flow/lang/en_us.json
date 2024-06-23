@@ -1,6 +1,7 @@
 {
   "flow.config.title": "Flow Config",
-  "flow.config.category.general": "Transitions",
+  "flow.config.category.easings": "Easings",
+  "flow.config.category.background": "Background",
   "flow.config.category.compat": "Compatability",
 
   "flow.config.group.easeIn": "Ease In",
