@@ -46,7 +46,7 @@ dependencies {
 
     //	Compatability mods.
     modLocalRuntime modCompileOnly("com.terraformersmc:modmenu:${property('runtime.modmenu')}")
-    modCompileOnly("dev.emi:emi-fabric:${property('runtime.emi')}")
+    modLocalRuntime modCompileOnly("dev.emi:emi-fabric:${property('runtime.emi')}")
     modLocalRuntime modCompileOnly("maven.modrinth:brb:${property('runtime.brb')}")
     modLocalRuntime("maven.modrinth:architectury-api:${property('runtime.architectury')}")
     modLocalRuntime("maven.modrinth:cloth-config:${property('runtime.cloth')}")

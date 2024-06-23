@@ -1,11 +1,13 @@
 package dev.imb11.flow.mixin;
 
+import dev.imb11.flow.Flow;
 import dev.imb11.flow.api.FlowAPI;
 import dev.imb11.flow.api.animation.AnimationType;
 import dev.imb11.flow.api.animation.Easings;
 import dev.imb11.flow.api.animation.OffsetProvider;
 import dev.imb11.flow.api.rendering.FlowBlurHelper;
 import dev.imb11.flow.config.FlowConfig;
+import dev.imb11.flow.render.FlowBackgroundHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
@@ -19,6 +21,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,6 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(HandledScreen.class)
 public abstract class ScreenMixin extends Screen {
@@ -66,51 +70,32 @@ public abstract class ScreenMixin extends Screen {
         }
     }
 
-    @Unique
-    public void safelyUnlockMouse() {
-        assert this.client != null;
-        if(FlowConfig.get().disableMouseMovement) return;
-        if (this.client.isWindowFocused()) {
-            if (!this.client.mouse.isCursorLocked()) {
-                if (!MinecraftClient.IS_SYSTEM_MAC) {
-                    KeyBinding.updatePressedStates();
-                }
-
-                this.client.mouse.cursorLocked = true;
-                this.client.mouse.x = (double) this.client.getWindow().getWidth() / 2;
-                this.client.mouse.y = (double) this.client.getWindow().getHeight() / 2;
-                InputUtil.setCursorParameters(this.client.getWindow().getHandle(), 212995, this.client.mouse.x, this.client.mouse.y);
-                this.client.attackCooldown = 10000;
-                this.client.mouse.hasResolutionChanged = true;
-            }
-        }
-    }
-
-    @Inject(method = "close", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "close", at = @At("TAIL"))
     private void $mark_exit_animation(CallbackInfo ci) {
         if(isDisabledScreen() || FlowAPI.shouldAvoidCalculation()) return;
 
-        ci.cancel();
+        Flow.screenFadingOut = this;
+
         if(isClosing) return;
         FlowAPI.setInTransition(true);
         elapsed = 0f;
         isClosing = true;
-        this.client.getSoundManager().resumeAll();
-        this.safelyUnlockMouse();
 
-        new Thread(() -> {
+        CompletableFuture.supplyAsync(() -> {
             while (!finishedCloseAnimation) {
                 Thread.onSpinWait();
             }
+
             assert this.client != null;
             assert this.client.player != null;
             this.client.execute(() -> {
                 this.finishedCloseAnimation = false;
+                Flow.screenFadingOut = null;
                 FlowAPI.setInTransition(false);
-                this.client.player.closeHandledScreen();
-                super.close();
             });
-        }).start();
+
+            return null;
+        }, Util.getMainWorkerExecutor());
     }
 
     @Unique
@@ -128,10 +113,10 @@ public abstract class ScreenMixin extends Screen {
         assert this.client != null;
 
         if (isClosing && FlowConfig.get().disableEaseOut || isDisabledScreen()) {
-            renderStaticBg(context);
+            FlowBackgroundHelper.renderStaticBg(this, context);
             return;
         } else if (!isClosing && (FlowConfig.get().disableEaseIn || temp_disableEaseIn)) {
-            renderStaticBg(context);
+            FlowBackgroundHelper.renderStaticBg(this, context);
             return;
         }
 
@@ -150,26 +135,9 @@ public abstract class ScreenMixin extends Screen {
             // Lerp the blur intensity from 0 to FlowConfig.get().bgBlurIntensity
             float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);
 
-            this.renderBgEffects(context, blurIntensity, AARRGGBB);
+            FlowBackgroundHelper.renderBgEffects(this, context, blurIntensity, AARRGGBB);
         } else {
             this.renderBackgroundTexture(context);
-        }
-    }
-
-    @Unique void renderStaticBg(DrawContext context) {
-        var alpha = 0xCF;
-        var AARRGGBB = (alpha << 24) | (FlowConfig.get().bgColorTint.getRGB() & 0x00FFFFFF);
-        this.renderBgEffects(context, FlowConfig.get().bgBlurIntensity * 16, AARRGGBB);
-    }
-
-    @Unique
-    private void renderBgEffects(DrawContext context, float blurIntensity, int color) {
-        if(!FlowConfig.get().disableBgTint) {
-            context.fill(0, 0, this.width, this.height, color);
-        }
-
-        if(!FlowConfig.get().disableBgBlur) {
-            FlowBlurHelper.apply(this.width, this.height, context, blurIntensity, 16);
         }
     }
 
