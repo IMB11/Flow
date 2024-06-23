@@ -23,11 +23,14 @@ void main() {
     // Pixel colour
     vec4 Color = texture(InputSampler, uv);
 
-    // Blur calculations
-    for (float d = 0.0; d < TAU; d += TAU / Directions) {
-        for (float i = 1.0 / Quality; i <= 1.0; i += 1.0 / Quality) {
-            Color += texture(InputSampler, uv + vec2(cos(d), sin(d)) * Radius * i);
-        }
+    // Calculate total number of samples
+    int totalSamples = int(Directions * Quality);
+
+    // Single loop for blur calculations
+    for (int sample = 0; sample < totalSamples; ++sample) {
+        float d = (float(sample) / Quality) * (TAU / Directions);
+        float i = (mod(float(sample), Quality) + 1.0) / Quality;
+        Color += texture(InputSampler, uv + vec2(cos(d), sin(d)) * Radius * i);
     }
 
     // Output to screen

@@ -29,7 +29,7 @@ public class Flow implements ClientModInitializer {
 		HudRenderCallback.EVENT.register((context, tickDeltac) -> {
 			if(screenFadingOut != null) {
 				context.getMatrices().push();
-				context.getMatrices().translate(0f, 0f, 1000f);
+				context.getMatrices().translate(0f, 0f, 10000f);
 				int mouseX = (int) MinecraftClient.getInstance().mouse.x;
 				int mouseY = (int) MinecraftClient.getInstance().mouse.y;
 
