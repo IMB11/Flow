@@ -19,5 +19,5 @@ public class GrindstoneFixMixin extends Screen {
     /*? if <1.20.2 {*//*
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/GrindstoneScreen;drawBackground(Lnet/minecraft/client/gui/DrawContext;FII)V"))
     public void $cancel_draw_background(GrindstoneScreen instance, DrawContext context, float delta, int mouseX, int mouseY) {}
-    *//*? } */
+    *//*?}*/
 }

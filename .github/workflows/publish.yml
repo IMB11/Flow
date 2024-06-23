@@ -12,15 +12,18 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: corretto
           cache: gradle
-          java-version: 17
+          java-version: 21
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: "wrapper"
-      - name: Build All Versions with chiseledBuild
-        run: "gradle chiseledBuild"
+      - name: Build JARs
+        uses: Wandalen/wretry.action@master
+        with:
+          command: "gradle chiseledBuild"
+          attempt_limit: 3
       - name: Upload Built JARs
         uses: actions/upload-artifact@v4
         with:
@@ -33,7 +36,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        game_version: [ "1.20.1", "1.20.2", "1.20.4" ]
+        game_version: [ "1.20.1", "1.20.4", "1.20.6", "1.21" ]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

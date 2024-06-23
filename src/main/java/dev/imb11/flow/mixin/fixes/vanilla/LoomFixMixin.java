@@ -25,5 +25,5 @@ public class LoomFixMixin extends Screen {
 
     @Redirect(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/LoomScreen;renderBackground(Lnet/minecraft/client/gui/DrawContext;)V", ordinal = 0))
     public void $cancel_render_background(LoomScreen instance, DrawContext context) {}
-    *//*? } */
+    *//*?}*/
 }

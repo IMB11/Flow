@@ -12,13 +12,13 @@ pluginManagement {
 }
 
 plugins {
-    id "dev.kikugie.stonecutter" version "0.3.2"
+    id "dev.kikugie.stonecutter" version "0.4"
 }
 
 stonecutter {
     shared {
-        versions '1.20.4', '1.20.2', '1.20.1'
-        vcsVersion '1.20.4'
+        versions '1.20.6', '1.21', '1.20.4', '1.20.1'
+        vcsVersion '1.21'
     }
 
     create rootProject

@@ -23,16 +23,23 @@ public class Flow implements ClientModInitializer {
 		FlowConfig.load();
 
 		CoreShaderRegistrationCallback.EVENT.register(context -> {
-			context.register(new Identifier("flow", "blur"), VertexFormats.POSITION, shaderProgram -> FlowBlurHelper.INSTANCE.load(shaderProgram));
+			context.register(Identifier.of("flow", "blur"), VertexFormats.POSITION, shaderProgram -> FlowBlurHelper.INSTANCE.load(shaderProgram));
 		});
 
-		HudRenderCallback.EVENT.register((context, tickDelta) -> {
+		HudRenderCallback.EVENT.register((context, tickDeltac) -> {
 			if(screenFadingOut != null) {
 				context.getMatrices().push();
 				context.getMatrices().translate(0f, 0f, 1000f);
 				int mouseX = (int) MinecraftClient.getInstance().mouse.x;
 				int mouseY = (int) MinecraftClient.getInstance().mouse.y;
+
+				/*? if <1.21 {*//*
+				float tickDelta = tickDeltac;
 				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
+				*//*?} else {*/
+				float tickDelta = tickDeltac.getTickDelta(true);
+				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
+				/*?}*/
 
 				if(FabricLoader.getInstance().isModLoaded("emi")) {
 					EMIHelper.renderEMI(screenFadingOut, context, mouseX, mouseY, tickDelta);

@@ -26,5 +26,5 @@ public abstract class StonecutterFixMixin extends Screen {
 
     @Redirect(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/StonecutterScreen;renderBackground(Lnet/minecraft/client/gui/DrawContext;)V", ordinal = 0))
     public void $cancel_render_background(StonecutterScreen instance, DrawContext context) {}
-    *//*? } */
+    *//*?}*/
 }

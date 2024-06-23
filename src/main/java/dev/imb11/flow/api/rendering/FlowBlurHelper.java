@@ -8,6 +8,7 @@ import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.SimpleFramebuffer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -20,6 +21,7 @@ import org.lwjgl.opengl.GL30;
  */
 public class FlowBlurHelper {
     public static void apply(float width, float height, DrawContext context, float size, float quality) {
+        /*? if <1.21 {*//*
         var buffer = Tessellator.getInstance().getBuffer();
         var matrix = context.getMatrices().peek().getPositionMatrix();
 
@@ -33,6 +35,20 @@ public class FlowBlurHelper {
         FlowBlurHelper.INSTANCE.use();
 
         Tessellator.getInstance().draw();
+        *//*?} else {*/
+        var bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        var matrix = context.getMatrices().peek().getPositionMatrix();
+
+        bufferBuilder.vertex(matrix, 0, 0, 0);
+        bufferBuilder.vertex(matrix, 0, height, 0);
+        bufferBuilder.vertex(matrix, width, height, 0);
+        bufferBuilder.vertex(matrix, width, 0, 0);
+
+        FlowBlurHelper.INSTANCE.setParameters(16, quality, size);
+        FlowBlurHelper.INSTANCE.use();
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        /*?}*/
     }
     public static FlowBlurHelper INSTANCE = new FlowBlurHelper();
     public boolean loaded = false;

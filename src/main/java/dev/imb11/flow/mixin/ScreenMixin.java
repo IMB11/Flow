@@ -5,19 +5,14 @@ import dev.imb11.flow.api.FlowAPI;
 import dev.imb11.flow.api.animation.AnimationType;
 import dev.imb11.flow.api.animation.Easings;
 import dev.imb11.flow.api.animation.OffsetProvider;
-import dev.imb11.flow.api.rendering.FlowBlurHelper;
 import dev.imb11.flow.config.FlowConfig;
 import dev.imb11.flow.render.FlowBackgroundHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -33,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 
 @Mixin(HandledScreen.class)
@@ -47,7 +41,7 @@ public abstract class ScreenMixin extends Screen {
 
     /*? if >=1.20.2 {*/
     @Shadow protected abstract void drawBackground(DrawContext context, float delta, int mouseX, int mouseY);
-    /*? } */
+    /*?}*/
 
     @Shadow @Final protected ScreenHandler handler;
 
@@ -107,9 +101,9 @@ public abstract class ScreenMixin extends Screen {
     @Override
     /*? if <1.20.2 {*//*
     public void renderBackground(DrawContext context) {
-    *//*? } else { */
+    *//*?} else {*/
     public void renderInGameBackground(DrawContext context) {
-    /*? } */
+    /*?}*/
         assert this.client != null;
 
         if (isClosing && FlowConfig.get().disableEaseOut || isDisabledScreen()) {
@@ -137,7 +131,11 @@ public abstract class ScreenMixin extends Screen {
 
             FlowBackgroundHelper.renderBgEffects(this, context, blurIntensity, AARRGGBB);
         } else {
+            /*? if <1.20.5 {*//*
             this.renderBackgroundTexture(context);
+            *//*?} else {*/
+            this.renderInGameBackground(context);
+            /*?}*/
         }
     }
 
@@ -151,13 +149,17 @@ public abstract class ScreenMixin extends Screen {
     /*? if <1.20.2 {*//*
     @Inject(method = "render", at = @At("HEAD"))
     private void $render_animation(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-    *//*? } else { */
+    *//*?} else {*/
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
     private void $render_animation(Screen instance, DrawContext context, int mouseX, int mouseY, float delta) {
         this.renderInGameBackground(context);
-    /*? } */
+    /*?}*/
 
+        /*? if <1.21 {*//*
         elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
+        *//*?} else {*/
+        elapsed += MinecraftClient.getInstance().getRenderTickCounter().getLastFrameDuration() / 25;
+        /*?}*/
 
         var totalTime = 0.3f;
         if(isClosing) {
@@ -199,12 +201,12 @@ public abstract class ScreenMixin extends Screen {
 
         /*? if <1.20.2 {*//*
         context.getMatrices().push();
-        *//*? } else {*/
+        *//*?} else {*/
         this.drawBackground(context, delta, mouseX, mouseY);
 
         for (Drawable drawable : ((ScreenAccessor) this).getDrawables()) {
             drawable.render(context, mouseX, mouseY, delta);
         }
-        /*? } */
+        /*?}*/
     }
 }

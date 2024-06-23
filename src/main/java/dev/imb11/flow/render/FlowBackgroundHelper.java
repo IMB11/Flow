@@ -2,6 +2,7 @@ package dev.imb11.flow.render;
 
 import dev.imb11.flow.api.rendering.FlowBlurHelper;
 import dev.imb11.flow.config.FlowConfig;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 
