@@ -18,8 +18,8 @@ public abstract class StonecutterFixMixin extends Screen {
         super(title);
     }
 
-    /*? if <1.20.2 {*//*
-    @Inject(method = "render", at = @At("HEAD"))
+    /*? if <1.20.2 {*/
+    /*@Inject(method = "render", at = @At("HEAD"))
     public void $invoke_render_background(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         this.renderBackground(context);
     }

@@ -118,8 +118,8 @@ public abstract class ScreenMixin extends Screen {
     }
 
     @Override
-    /*? if <1.20.2 {*//*
-    public void renderBackground(DrawContext context) {
+    /*? if <1.20.2 {*/
+    /*public void renderBackground(DrawContext context) {
     *//*?} else {*/
     public void renderInGameBackground(DrawContext context) {
     /*?}*/
@@ -165,8 +165,8 @@ public abstract class ScreenMixin extends Screen {
         }
     }
 
-    /*? if <1.20.2 {*//*
-    @Inject(method = "render", at = @At("HEAD"))
+    /*? if <1.20.2 {*/
+    /*@Inject(method = "render", at = @At("HEAD"))
     private void $render_animation(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
     *//*?} else {*/
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
@@ -218,8 +218,8 @@ public abstract class ScreenMixin extends Screen {
             provider.apply(context.getMatrices());
         }
 
-        /*? if <1.20.2 {*//*
-        context.getMatrices().push();
+        /*? if <1.20.2 {*/
+        /*context.getMatrices().push();
         *//*?} else {*/
         this.drawBackground(context, delta, mouseX, mouseY);
 
