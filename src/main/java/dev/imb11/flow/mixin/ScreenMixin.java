@@ -88,14 +88,14 @@ public abstract class ScreenMixin extends Screen {
     @Inject(method = "close", at = @At("TAIL"), cancellable = true)
     private void $mark_exit_animation(CallbackInfo ci) {
         if(isDisabledScreen() || FlowAPI.shouldAvoidCalculation()) return;
-
-        ci.cancel();
         if(isClosing) return;
+
+        Flow.screenFadingOut = this;
         FlowAPI.setInTransition(true);
         elapsed = 0f;
         isClosing = true;
-        this.client.getSoundManager().resumeAll();
-        this.safelyUnlockMouse();
+//        this.client.getSoundManager().resumeAll();
+//        this.safelyUnlockMouse();
 
         new Thread(() -> {
             while (!finishedCloseAnimation) {
@@ -106,8 +106,7 @@ public abstract class ScreenMixin extends Screen {
             this.client.execute(() -> {
                 this.finishedCloseAnimation = false;
                 FlowAPI.setInTransition(false);
-                this.client.player.closeHandledScreen();
-                super.close();
+                Flow.screenFadingOut = null;
             });
         }).start();
     }
@@ -151,8 +150,8 @@ public abstract class ScreenMixin extends Screen {
 
             FlowBackgroundHelper.renderBgEffects(this, context, blurIntensity, AARRGGBB);
         } else {
-            /*? if <1.20.5 {*//*
-            this.renderBackgroundTexture(context);
+            /*? if <1.20.5 {*/
+            /*this.renderBackgroundTexture(context);
             *//*?} else {*/
             this.renderInGameBackground(context);
             /*?}*/
@@ -175,8 +174,8 @@ public abstract class ScreenMixin extends Screen {
         this.renderInGameBackground(context);
     /*?}*/
 
-        /*? if <1.21 {*//*
-        elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
+        /*? if <1.21 {*/
+        /*elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
         *//*?} else {*/
         elapsed += MinecraftClient.getInstance().getRenderTickCounter().getLastFrameDuration() / 25;
         /*?}*/

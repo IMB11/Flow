@@ -21,8 +21,8 @@ import org.lwjgl.opengl.GL30;
  */
 public class FlowBlurHelper {
     public static void apply(float width, float height, DrawContext context, float size, float quality) {
-        /*? if <1.21 {*//*
-        var buffer = Tessellator.getInstance().getBuffer();
+        /*? if <1.21 {*/
+        /*var buffer = Tessellator.getInstance().getBuffer();
         var matrix = context.getMatrices().peek().getPositionMatrix();
 
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);

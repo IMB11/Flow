@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 public class Flow implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("flow");
 	public static Screen screenFadingOut = null;
+//	public static DrawContext buf = null;
 	@Override
 	public void onInitializeClient() {
 		FlowConfig.load();
@@ -26,27 +27,33 @@ public class Flow implements ClientModInitializer {
 			context.register(Identifier.of("flow", "blur"), VertexFormats.POSITION, shaderProgram -> FlowBlurHelper.INSTANCE.load(shaderProgram));
 		});
 
-//		HudRenderCallback.EVENT.register((context, tickDeltac) -> {
-//			if(screenFadingOut != null) {
-//				context.getMatrices().push();
-//				context.getMatrices().translate(0f, 0f, 10000f);
-//				int mouseX = (int) MinecraftClient.getInstance().mouse.x;
-//				int mouseY = (int) MinecraftClient.getInstance().mouse.y;
-//
-//				/*? if <1.21 {*//*
-//				float tickDelta = tickDeltac;
-//				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
-//				*//*?} else {*/
-//				float tickDelta = tickDeltac.getTickDelta(true);
-//				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
-//				/*?}*/
-//
-//				if(FabricLoader.getInstance().isModLoaded("emi")) {
-//					EMIHelper.renderEMI(screenFadingOut, context, mouseX, mouseY, tickDelta);
-//				}
-//
-//				context.getMatrices().pop();
+		HudRenderCallback.EVENT.register((context, tickDeltac) -> {
+			if(screenFadingOut != null) {
+				context.getMatrices().push();
+				context.getMatrices().translate(0f, 0f, 3000f);
+				int mouseX = (int) MinecraftClient.getInstance().mouse.x;
+				int mouseY = (int) MinecraftClient.getInstance().mouse.y;
+
+				/*? if <1.21 {*/
+				/*float tickDelta = tickDeltac;
+				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
+				*//*?} else {*/
+				float tickDelta = tickDeltac.getTickDelta(true);
+				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
+				/*?}*/
+
+				if(FabricLoader.getInstance().isModLoaded("emi")) {
+					EMIHelper.renderEMI(screenFadingOut, context, mouseX, mouseY, tickDelta);
+				}
+
+				context.getMatrices().pop();
+			}
+
+//			if(buf != null && MinecraftClient.getInstance().currentScreen == null) {
+////				new BuiltBuffer(buf.getAllocated(), new BuiltBuffer.DrawParameters(RenderLayer.getGui().getVertexFormat(), ))
+////				context.getVertexConsumers().draw(RenderLayer.getGui(), buf);
+////				buf.draw();
 //			}
-//		});
+		});
 	}
 }
