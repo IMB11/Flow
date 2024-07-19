@@ -1,8 +1,10 @@
 package dev.imb11.flow;
 
+import dev.imb11.flow.api.FlowAPI;
 import dev.imb11.flow.api.rendering.FlowBlurHelper;
 import dev.imb11.flow.config.FlowConfig;
 import dev.imb11.flow.render.EMIHelper;
+import dev.imb11.flow.render.RenderHelper;
 import net.fabricmc.api.ClientModInitializer;
 
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
@@ -28,25 +30,8 @@ public class Flow implements ClientModInitializer {
 		});
 
 		HudRenderCallback.EVENT.register((context, tickDeltac) -> {
-			if(screenFadingOut != null) {
-				context.getMatrices().push();
-				context.getMatrices().translate(0f, 0f, 3000f);
-				int mouseX = (int) MinecraftClient.getInstance().mouse.x;
-				int mouseY = (int) MinecraftClient.getInstance().mouse.y;
-
-				/*? if <1.21 {*/
-				/*float tickDelta = tickDeltac;
-				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
-				*//*?} else {*/
-				float tickDelta = tickDeltac.getTickDelta(true);
-				screenFadingOut.render(context, mouseX, mouseY, tickDelta);
-				/*?}*/
-
-				if(FabricLoader.getInstance().isModLoaded("emi")) {
-					EMIHelper.renderEMI(screenFadingOut, context, mouseX, mouseY, tickDelta);
-				}
-
-				context.getMatrices().pop();
+			if(FlowAPI.isInTransition()) {
+				RenderHelper.renderOutput(context);
 			}
 
 //			if(buf != null && MinecraftClient.getInstance().currentScreen == null) {

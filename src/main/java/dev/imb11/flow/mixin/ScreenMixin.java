@@ -7,6 +7,7 @@ import dev.imb11.flow.api.animation.Easings;
 import dev.imb11.flow.api.animation.OffsetProvider;
 import dev.imb11.flow.config.FlowConfig;
 import dev.imb11.flow.render.FlowBackgroundHelper;
+import dev.imb11.flow.render.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
@@ -123,6 +124,10 @@ public abstract class ScreenMixin extends Screen {
     *//*?} else {*/
     public void renderInGameBackground(DrawContext context) {
     /*?}*/
+        if(RenderHelper.isRendering) {
+            super.renderInGameBackground(context);
+            return;
+        }
         assert this.client != null;
 
         if (isClosing && FlowConfig.get().disableEaseOut || isDisabledScreen()) {
@@ -153,7 +158,7 @@ public abstract class ScreenMixin extends Screen {
             /*? if <1.20.5 {*/
             /*this.renderBackgroundTexture(context);
             *//*?} else {*/
-            this.renderInGameBackground(context);
+            super.renderInGameBackground(context);
             /*?}*/
         }
     }
@@ -171,6 +176,10 @@ public abstract class ScreenMixin extends Screen {
     *//*?} else {*/
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
     private void $render_animation(Screen instance, DrawContext context, int mouseX, int mouseY, float delta) {
+        if(RenderHelper.isRendering) {
+            super.render(context, mouseX, mouseY, delta);
+            return;
+        }
         this.renderInGameBackground(context);
     /*?}*/
 
@@ -227,5 +236,7 @@ public abstract class ScreenMixin extends Screen {
             drawable.render(context, mouseX, mouseY, delta);
         }
         /*?}*/
+
+        RenderHelper.cacheScreen((HandledScreen<?>) (Object) this, context, delta);
     }
 }
