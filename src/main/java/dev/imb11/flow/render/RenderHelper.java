@@ -79,7 +79,7 @@ public class RenderHelper {
 
         /*? if <1.21 {*//*
         tesselator.draw();
-        *//*? } else {(*/
+        *//*? } else {*/
         BufferRenderer.drawWithGlobalProgram(buffer.end());
         /*?}*/
 
