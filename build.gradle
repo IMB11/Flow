@@ -54,7 +54,7 @@ dependencies {
 //    modLocalRuntime("maven.modrinth:cloth-config:${property('runtime.cloth')}")
 
     if (stonecutter.current.version == "1.20.1") {
-        modImplementation "folk.sisby:inventory-tabs:1.1.8+1.20"
+        modCompileOnly "folk.sisby:inventory-tabs:1.1.8+1.20"
     }
 }
 

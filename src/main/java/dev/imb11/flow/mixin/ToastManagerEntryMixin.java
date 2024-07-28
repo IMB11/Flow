@@ -17,19 +17,19 @@ import java.util.Objects;
 
 @Mixin(ToastManager.Entry.class)
 public class ToastManagerEntryMixin {
-    @Inject(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V"), cancellable = false)
+    @Inject(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V", shift = At.Shift.BEFORE), cancellable = false)
     public void $negate_transition(int x, DrawContext context, CallbackInfoReturnable<Boolean> cir) {
-        if(FlowAPI.isInTransition()) {
-            Screen screen = MinecraftClient.getInstance().currentScreen;
+        if(FlowAPI.isInTransition() && !FlowAPI.isClosing()) {
+            var client = MinecraftClient.getInstance();
 
-            if(screen == null) {
-                screen = Flow.screenFadingOut;
-            }
+            if(client.currentScreen == null) return;
+            float width = client.currentScreen.width;
+            float height = client.currentScreen.height;
 
-            if(FlowAPI.shouldAvoidCalculation() || screen == null) return;
+            if(FlowAPI.shouldAvoidCalculation() || !FlowAPI.isInTransition()) return;
 
             AnimationType animationType = AnimationType.getAnimationType(FlowAPI.isClosing());
-            OffsetProvider offsetProvider = animationType.calculateOffset(screen.width, screen.height, FlowAPI.getTransitionProgress(), FlowAPI.isClosing());
+            OffsetProvider offsetProvider = animationType.calculateOffset(width, height, FlowAPI.getTransitionProgress(), FlowAPI.isClosing());
             offsetProvider.negate(context.getMatrices());
         }
     }

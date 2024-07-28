@@ -19,8 +19,6 @@ import org.slf4j.LoggerFactory;
 
 public class Flow implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("flow");
-	public static Screen screenFadingOut = null;
-//	public static DrawContext buf = null;
 	@Override
 	public void onInitializeClient() {
 		FlowConfig.load();
@@ -30,9 +28,19 @@ public class Flow implements ClientModInitializer {
 		});
 
 		HudRenderCallback.EVENT.register((context, tickDeltac) -> {
-			if(FlowAPI.isInTransition()) {
-				RenderHelper.renderOutput(context);
+			/*? if <1.21 {*/
+			/*float frameDuration = MinecraftClient.getInstance().getLastFrameDuration() / 25;
+			*//*?} else {*/
+			float frameDuration = MinecraftClient.getInstance().getRenderTickCounter().getLastFrameDuration() / 25;
+			/*?}*/
+
+			context.getMatrices().push();
+			context.getMatrices().translate(0, 0, 5000);
+
+			if(FlowAPI.isInTransition() && FlowAPI.isClosing()) {
+				RenderHelper.renderOutput(context, frameDuration);
 			}
+			context.getMatrices().pop();
 
 //			if(buf != null && MinecraftClient.getInstance().currentScreen == null) {
 ////				new BuiltBuffer(buf.getAllocated(), new BuiltBuffer.DrawParameters(RenderLayer.getGui().getVertexFormat(), ))
