@@ -8,6 +8,7 @@ import dev.imb11.flow.api.animation.OffsetDistributor;
 import dev.imb11.flow.api.animation.OffsetProvider;
 import dev.imb11.flow.api.rendering.FlowBlurHelper;
 import dev.imb11.flow.config.FlowConfig;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.WindowFramebuffer;
 import net.minecraft.client.gui.DrawContext;
@@ -94,8 +95,10 @@ public class RenderHelper {
         context.getMatrices().pop();
     }
 
-    public static void cacheScreen(HandledScreen<?> screenToCache, DrawContext ctx, float tickDelta) {
+    public static void cacheScreen(HandledScreen<?> screenToCache, DrawContext ctx, float tickDelta, int mouseX, int mouseY) {
         isRendering = true;
+        FabricLoader.getInstance().getObjectShare().put("flow:is_caching_screen", true);
+
         MinecraftClient client = MinecraftClient.getInstance();
         var window = client.getWindow();
 
@@ -117,9 +120,10 @@ public class RenderHelper {
 
         framebuffer.clear(MinecraftClient.IS_SYSTEM_MAC);
         framebuffer.beginWrite(true);
-        screenToCache.render(ctx, (int) client.mouse.x, (int) client.mouse.y, tickDelta);
+        screenToCache.render(ctx, mouseX, mouseY, tickDelta);
         framebuffer.endWrite();
         client.getFramebuffer().beginWrite(true);
         isRendering = false;
+        FabricLoader.getInstance().getObjectShare().put("flow:is_caching_screen", false);
     }
 }

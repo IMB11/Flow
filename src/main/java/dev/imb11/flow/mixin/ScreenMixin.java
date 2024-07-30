@@ -107,7 +107,7 @@ public abstract class ScreenMixin extends Screen {
             return;
         }
 
-        RenderHelper.cacheScreen((HandledScreen<?>) (Object) this, context, delta);
+        RenderHelper.cacheScreen((HandledScreen<?>) (Object) this, context, delta, mouseX, mouseY);
 
         /*? if <1.21 {*/
         /*elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
