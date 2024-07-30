@@ -24,13 +24,19 @@ public class RenderHelper {
     public static void renderOutput(DrawContext context, float frameDuration) {
         if(framebuffer == null) return;
         MinecraftClient client = MinecraftClient.getInstance();
+
+        var w = client.getWindow().getScaledWidth();
+        var h = client.getWindow().getScaledHeight();
+
+        if(w <= 0 || h <= 0) {
+            framebuffer = null;
+            return;
+        }
+
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, framebuffer.getColorAttachment());
-
-        var w = client.getWindow().getScaledWidth();
-        var h = client.getWindow().getScaledHeight();
 
         elapsed += frameDuration;
         float progress = 1.0f - (elapsed / (FlowConfig.get().easeOutDuration));
@@ -92,6 +98,11 @@ public class RenderHelper {
         isRendering = true;
         MinecraftClient client = MinecraftClient.getInstance();
         var window = client.getWindow();
+
+        if(window.getWidth() <= 0 || window.getHeight() <= 0) {
+            framebuffer = null;
+            return;
+        }
 
         if (framebuffer == null) {
             framebuffer = new WindowFramebuffer(window.getWidth(), window.getHeight());
