@@ -27,8 +27,10 @@
   "flow.config.easeOutDuration.desc": "The duration of the ease out animation when closing the inventory.",
 
   "flow.config.disableMouseMovement": "Disable Viewport Mouse Movement",
-    "flow.config.disableMouseMovement.desc": "Disable the camera viewport movement when the inventory is closing. Can be useful for servers with custom GUIs that don't want the player to be able to move the mouse during this process.",
+  "flow.config.disableMouseMovement.desc": "Disable the camera viewport movement when the inventory is closing. Can be useful for servers with custom GUIs that don't want the player to be able to move the mouse during this process.",
 
+  "flow.config.disableAllBackgroundModifications": "Disable All Background Modifications",
+    "flow.config.disableAllBackgroundModifications.desc": "Disable all background modifications. This will disable the background blur and tint.",
   "flow.config.disableBgBlur": "Disable Background Blur",
   "flow.config.disableBgBlur.desc": "Disable the background blur - useful for performance on low-end devices.",
   "flow.config.bgBlurIntensity": "Background Blur Intensity",

@@ -1,5 +1,6 @@
 package dev.imb11.flow.api.animation;
 
+import dev.imb11.flow.Flow;
 import dev.imb11.flow.config.FlowConfig;
 import net.minecraft.util.math.MathHelper;
 

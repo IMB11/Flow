@@ -1,6 +1,7 @@
 package dev.imb11.flow.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.imb11.flow.Flow;
 import dev.imb11.flow.api.FlowAPI;
 import dev.imb11.flow.api.animation.AnimationType;
 import dev.imb11.flow.api.animation.Easings;
@@ -57,12 +58,13 @@ public class RenderHelper {
         float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);
 
 
-        FlowBackgroundHelper.renderBgEffects(fbWidth, fbHeight, context, blurIntensity, AARRGGBB);
+        FlowBackgroundHelper.renderBgEffects(w, h, context, blurIntensity, AARRGGBB);
         context.getMatrices().pop();
 
         context.getMatrices().push();
         AnimationType animationType = AnimationType.getAnimationType(true);
-        OffsetProvider provider = animationType.calculateOffset(fbWidth, fbHeight, progress, true);
+
+        OffsetProvider provider = animationType.calculateOffset(w, h, progress, true);
         provider.apply(context.getMatrices());
 
         /*? if >=1.21 {*/

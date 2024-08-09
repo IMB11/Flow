@@ -204,10 +204,10 @@ public class FlowConfig {
                             .text(HELPER.getDesc("disableAllBackgroundModifications"))
                             .build())
                     .listener((opt, val) -> {
-                        bgColorTintOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
-                        bgBlurIntensityOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
-                        disableBgBlurOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
-                        disableBgTintOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
+                        bgColorTintOption.setAvailable(!val);
+                        bgBlurIntensityOption.setAvailable(!val);
+                        disableBgBlurOption.setAvailable(!val);
+                        disableBgTintOption.setAvailable(!val);
                     })
                     .available(!Flow.areBackgroundModsPresent())
                     .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
