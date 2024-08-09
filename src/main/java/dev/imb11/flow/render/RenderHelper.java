@@ -56,6 +56,7 @@ public class RenderHelper {
         int AARRGGBB = (alpha << 24) | (RRGGBB & 0x00FFFFFF);
         float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);
 
+
         FlowBackgroundHelper.renderBgEffects(fbWidth, fbHeight, context, blurIntensity, AARRGGBB);
         context.getMatrices().pop();
 

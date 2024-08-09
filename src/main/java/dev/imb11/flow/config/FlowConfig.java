@@ -1,6 +1,7 @@
 package dev.imb11.flow.config;
 
 import com.mineblock11.mru.config.YACLHelper;
+import dev.imb11.flow.Flow;
 import dev.imb11.flow.api.FlowAPI;
 import dev.imb11.flow.api.animation.AnimationType;
 import dev.imb11.flow.api.animation.Easings;
@@ -8,6 +9,7 @@ import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.*;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -34,6 +36,8 @@ public class FlowConfig {
     public boolean disableEaseIn = false;
     @SerialEntry
     public boolean disableEaseOut = false;
+    @SerialEntry
+    public boolean disableAllBackgroundModifications = false;
     @SerialEntry
     public Color bgColorTint = Color.BLACK;
     @SerialEntry
@@ -156,6 +160,7 @@ public class FlowConfig {
                     .name(HELPER.getName("bgColorTint"))
                     .description(HELPER.description("bgColorTint"))
                     .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(false))
+                    .available(!Flow.areBackgroundModsPresent())
                     .binding(defaults.bgColorTint, () -> config.bgColorTint, (val) -> config.bgColorTint = val)
                     .build();
 
@@ -167,6 +172,7 @@ public class FlowConfig {
                             .step(0.1f)
                             .formatValue(value -> Text.of(Math.round(value * 100) + "%"))
                     )
+                    .available(!Flow.areBackgroundModsPresent())
                     .binding(defaults.bgBlurIntensity, () -> config.bgBlurIntensity, (val) -> config.bgBlurIntensity = val)
                     .build();
 
@@ -176,7 +182,8 @@ public class FlowConfig {
                     .listener((opt, val) -> {
                         bgBlurIntensityOption.setAvailable(!val);
                     })
-                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter())
+                    .available(!Flow.areBackgroundModsPresent())
+                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
                     .binding(defaults.disableBgBlur, () -> config.disableBgBlur, (val) -> config.disableBgBlur = val)
                     .build();
 
@@ -186,8 +193,25 @@ public class FlowConfig {
                     .listener((opt, val) -> {
                         bgColorTintOption.setAvailable(!val);
                     })
-                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter())
+                    .available(!Flow.areBackgroundModsPresent())
+                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
                     .binding(defaults.disableBgTint, () -> config.disableBgTint, (val) -> config.disableBgTint = val)
+                    .build();
+
+            var disableAllBackgroundModificationsOption = Option.<Boolean>createBuilder()
+                    .name(HELPER.getName("disableAllBackgroundModifications"))
+                    .description(OptionDescription.createBuilder()
+                            .text(HELPER.getDesc("disableAllBackgroundModifications"))
+                            .build())
+                    .listener((opt, val) -> {
+                        bgColorTintOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
+                        bgBlurIntensityOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
+                        disableBgBlurOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
+                        disableBgTintOption.setAvailable(!val || !Flow.areBackgroundModsPresent());
+                    })
+                    .available(!Flow.areBackgroundModsPresent())
+                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
+                    .binding(defaults.disableAllBackgroundModifications, () -> config.disableAllBackgroundModifications, (val) -> config.disableAllBackgroundModifications = val)
                     .build();
 
             var disabledScreens = ListOption.<String>createBuilder()
@@ -202,7 +226,7 @@ public class FlowConfig {
             var crossInventoryAnimations = Option.<Boolean>createBuilder()
                     .name(HELPER.getName("disableCrossInventoryAnimations"))
                     .description(HELPER.description("disableCrossInventoryAnimations"))
-                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter())
+                    .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
                     .binding(defaults.disableCrossInventoryAnimations, () -> config.disableCrossInventoryAnimations, (val) -> config.disableCrossInventoryAnimations = val)
                     .build();
 
@@ -217,6 +241,7 @@ public class FlowConfig {
                     .category(ConfigCategory.createBuilder()
                             .name(Text.translatable("flow.config.category.background"))
                             .options(List.of(
+                                    disableAllBackgroundModificationsOption,
                                     disableBgTintOption,
                                     bgColorTintOption,
                                     disableBgBlurOption,

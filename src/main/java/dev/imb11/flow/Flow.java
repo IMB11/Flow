@@ -19,6 +19,12 @@ import org.slf4j.LoggerFactory;
 
 public class Flow implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("flow");
+
+	public static boolean areBackgroundModsPresent() {
+		return FabricLoader.getInstance().isModLoaded("eg-inventory-blur") ||
+				FabricLoader.getInstance().isModLoaded("blur");
+	}
+
 	@Override
 	public void onInitializeClient() {
 		FlowConfig.load();

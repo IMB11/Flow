@@ -72,7 +72,7 @@ public abstract class ScreenMixin extends Screen {
     *//*?} else {*/
     public void renderInGameBackground(DrawContext context) {
     /*?}*/
-        if(RenderHelper.isRendering) {
+        if(RenderHelper.isRendering || FlowBackgroundHelper.shouldSkipRender()) {
             return;
         }
         assert this.client != null;
