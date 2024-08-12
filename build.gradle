@@ -75,7 +75,8 @@ loom {
 processResources {
     filesMatching("fabric.mod.json") {
         expand 'mod_version': project.version,
-                'target_minecraft': project.property('mod.target')
+                'target_minecraft': project.property('mod.target'),
+                'target_mru': project.property('deps.mru')
     }
 }
 
