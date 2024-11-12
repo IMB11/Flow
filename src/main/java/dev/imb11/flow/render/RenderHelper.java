@@ -16,6 +16,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.*;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.glfw.GLFW;
 
 public class RenderHelper {
     private static WindowFramebuffer framebuffer;
@@ -107,6 +108,7 @@ public class RenderHelper {
 
         if(window.getWidth() <= 0 || window.getHeight() <= 0) {
             framebuffer = null;
+            isRendering = false;
             return;
         }
 
