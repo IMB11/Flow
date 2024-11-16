@@ -75,8 +75,8 @@ public abstract class ScreenMixin extends Screen {
         if(RenderHelper.isRendering || FlowBackgroundHelper.shouldSkipRender()) {
             if(!RenderHelper.isRendering) {
                 //? if <1.20.2 {
-                //super.renderBackground(context);
-                //?} else {
+                /*super.renderBackground(context);
+                *///?} else {
                 super.renderInGameBackground(context);
                 //?}
             }
@@ -84,14 +84,18 @@ public abstract class ScreenMixin extends Screen {
         }
         assert this.client != null;
 
-        if (isDisabledScreen() || (FlowConfig.get().disableEaseIn || temp_disableEaseIn)) {
+        if (isDisabledScreen() || (FlowConfig.get().disableEaseIn)) {
             FlowBackgroundHelper.renderStaticBg(this, context);
             return;
         }
 
         float progress = (elapsed / FlowConfig.get().easeInDuration);
-
         float eased = Easings.easeInOutCubic.eval(progress);
+
+        if (temp_disableEaseIn) {
+            eased = 1.0f;
+        }
+
         int alpha = MathHelper.lerp(eased, 0x00, 0x40);
         int RRGGBB = FlowConfig.get().bgColorTint.getRGB();
         int AARRGGBB = (alpha << 24) | (RRGGBB & 0x00FFFFFF);
@@ -137,7 +141,7 @@ public abstract class ScreenMixin extends Screen {
 
         boolean shouldApply = true;
 
-        if(FlowConfig.get().disableEaseIn || isDisabledScreen() || temp_disableEaseIn) {
+        if((FlowConfig.get().disableEaseIn || isDisabledScreen() || temp_disableEaseIn) && !FlowAPI.isClosing()) {
             context.getMatrices().push();
             shouldApply = false;
         }

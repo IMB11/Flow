@@ -6,6 +6,9 @@ import dev.imb11.flow.config.FlowConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.math.MathHelper;
+
+import java.awt.*;
 
 public class FlowBackgroundHelper {
     public static boolean shouldSkipRender() {
@@ -14,8 +17,8 @@ public class FlowBackgroundHelper {
     public static void renderStaticBg(Screen screen, DrawContext context) {
         if(shouldSkipRender()) return;
 
-        var alpha = 0xCF;
-        var AARRGGBB = (alpha << 24) | (FlowConfig.get().bgColorTint.getRGB() & 0x00FFFFFF);
+        Color color = FlowConfig.get().bgColorTint;
+        int AARRGGBB = (color.getAlpha() << 24) | (color.getRGB() & 0x00FFFFFF);
         renderBgEffects(screen.width, screen.height, context, FlowConfig.get().bgBlurIntensity * 16, AARRGGBB);
     }
 

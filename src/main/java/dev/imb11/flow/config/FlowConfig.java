@@ -49,7 +49,7 @@ public class FlowConfig {
     @SerialEntry
     public boolean disableAllBackgroundModifications = false;
     @SerialEntry
-    public Color bgColorTint = Color.BLACK;
+    public Color bgColorTint = new Color(0, 0, 0, 0xAA);
     @SerialEntry
     public float bgBlurIntensity = 0.6f;
     @SerialEntry
@@ -232,7 +232,7 @@ public class FlowConfig {
             var bgColorTintOption = Option.<Color>createBuilder()
                     .name(Text.translatable("flow" + ".config." + "bgColorTint"))
                     .description(builder8.build())
-                    .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(false))
+                    .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                     .available(!Flow.areBackgroundModsPresent())
                     .binding(defaults.bgColorTint, () -> config.bgColorTint, (val) -> config.bgColorTint = val)
                     .build();

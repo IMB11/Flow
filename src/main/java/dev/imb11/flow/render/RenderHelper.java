@@ -88,8 +88,8 @@ public class RenderHelper {
         *//*?}*/
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 
-        /*? if <1.21 {*//*
-        tesselator.draw();
+        /*? if <1.21 {*/
+        /*tesselator.draw();
         *//*?} else {*/
         BufferRenderer.drawWithGlobalProgram(buffer.end());
         /*?}*/
