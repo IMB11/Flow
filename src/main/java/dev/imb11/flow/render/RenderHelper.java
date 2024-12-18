@@ -1,22 +1,19 @@
 package dev.imb11.flow.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.imb11.flow.Flow;
 import dev.imb11.flow.api.FlowAPI;
 import dev.imb11.flow.api.animation.AnimationType;
 import dev.imb11.flow.api.animation.Easings;
-import dev.imb11.flow.api.animation.OffsetDistributor;
 import dev.imb11.flow.api.animation.OffsetProvider;
-import dev.imb11.flow.api.rendering.FlowBlurHelper;
 import dev.imb11.flow.config.FlowConfig;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gl.WindowFramebuffer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.*;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.glfw.GLFW;
 
 public class RenderHelper {
     private static WindowFramebuffer framebuffer;
@@ -38,7 +35,13 @@ public class RenderHelper {
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+
+        //? if >=1.21.2 {
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+        //?} else {
+        /*RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        *///?}
+
         RenderSystem.setShaderTexture(0, framebuffer.getColorAttachment());
 
         elapsed += frameDuration;
@@ -75,7 +78,12 @@ public class RenderHelper {
         buffer.vertex(pose, w, 0, 0).texture(1f, 1f);
         buffer.vertex(pose, 0, 0, 0).texture(0f, 1f);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        //? if >=1.21.2 {
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+        //?} else {
+        /*RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        *///?}
+
         BufferRenderer.drawWithGlobalProgram(buffer.end());
 
         RenderSystem.disableBlend();
@@ -104,10 +112,19 @@ public class RenderHelper {
         if (window.getWidth() != fbWidth || window.getHeight() != fbHeight) {
             fbWidth = window.getWidth();
             fbHeight = window.getHeight();
-            framebuffer.resize(fbWidth, fbHeight, MinecraftClient.IS_SYSTEM_MAC);
+
+            framebuffer.resize(fbWidth, fbHeight
+                    //? if <1.21.2 {
+                    /*, MinecraftClient.IS_SYSTEM_MAC
+                    *///?}
+            );
         }
 
-        framebuffer.clear(MinecraftClient.IS_SYSTEM_MAC);
+        framebuffer.clear(
+                //? if <1.21.2 {
+                /*MinecraftClient.IS_SYSTEM_MAC
+                *///?}
+        );
         framebuffer.beginWrite(true);
         screenToCache.render(ctx, mouseX, mouseY, tickDelta);
         framebuffer.endWrite();

@@ -23,6 +23,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.awt.*;
+
 @Mixin(HandledScreen.class)
 public abstract class ScreenMixin extends Screen {
     @Unique
@@ -86,7 +88,8 @@ public abstract class ScreenMixin extends Screen {
             eased = 1.0f;
         }
 
-        int alpha = MathHelper.lerp(eased, 0x00, 0x40);
+        Color bgColorTint = FlowConfig.get().bgColorTint;
+        int alpha = MathHelper.lerp(eased, 0x00, bgColorTint.getAlpha());
         int RRGGBB = FlowConfig.get().bgColorTint.getRGB();
         int AARRGGBB = (alpha << 24) | (RRGGBB & 0x00FFFFFF);
         float blurIntensity = MathHelper.lerp(eased, 0, FlowConfig.get().bgBlurIntensity * 16);

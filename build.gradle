@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.8-SNAPSHOT'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -44,12 +44,13 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
     }
 
-    modImplementation ("dev.imb11:mru:${property("deps.mru")}+${stonecutter.current.version}+fabric")
+    modImplementation ("dev.imb11:mru:${property("deps.mru")}+${stonecutter.current.version.replace("1.21.3", "1.21.4")}+fabric", {
+        transitive = false
+    })
 
     //	Compatability mods.
     modLocalRuntime modCompileOnly("com.terraformersmc:modmenu:${property('runtime.modmenu')}")
 
-//    if (stonecutter.current.version != "1.21.3")
     modCompileOnly("dev.emi:emi-fabric:${property('runtime.emi')}")
 
     modCompileOnly("maven.modrinth:brb:${property('runtime.brb')}")
@@ -72,6 +73,8 @@ if (stonecutter.current.active) {
 
 loom {
     accessWidenerPath.set(getRootProject().file("src/main/resources/flow.accesswidener"))
+
+//    validateAccessWidener.enabled = false
 }
 
 processResources {

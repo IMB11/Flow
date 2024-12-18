@@ -11,6 +11,7 @@ import net.minecraft.client.toast.ToastManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
@@ -18,7 +19,11 @@ import java.util.Objects;
 @Mixin(ToastManager.Entry.class)
 public class ToastManagerEntryMixin {
     @Inject(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V", shift = At.Shift.BEFORE), cancellable = false)
-    public void $negate_transition(int x, DrawContext context, CallbackInfoReturnable<Boolean> cir) {
+    //? if <1.21.2 {
+    /*public void $negate_transition(int x, DrawContext context, CallbackInfoReturnable<Boolean> cir) {
+    *///?} else {
+    public void $negate_transition(DrawContext context, int scaledWindowWidth, CallbackInfo ci) {
+    //?}
         if(FlowAPI.isInTransition() && !FlowAPI.isClosing()) {
             var client = MinecraftClient.getInstance();
 

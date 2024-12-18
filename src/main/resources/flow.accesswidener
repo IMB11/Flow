@@ -1,18 +1,5 @@
 accessWidener   v2  named
 
-# Mouse Class (ScreenMixin usage)
-accessible field net/minecraft/client/Mouse hasResolutionChanged Z
-accessible field net/minecraft/client/Mouse y D
-accessible field net/minecraft/client/Mouse x D
-accessible field net/minecraft/client/Mouse cursorLocked Z
-
 accessible class net/minecraft/client/toast/ToastManager$Entry
-
-#accessible field net/minecraft/client/render/VertexConsumerProvider$Immediate layerBuffers Ljava/util/SequencedMap;
-#accessible field net/minecraft/client/util/BufferAllocator size I
-#accessible method net/minecraft/client/render/VertexConsumerProvider$Immediate draw (Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/render/BufferBuilder;)V
-#accessible field net/minecraft/client/render/VertexConsumerProvider$Immediate pending Ljava/util/Map;
-#accessible field net/minecraft/client/render/BufferBuilder allocator Lnet/minecraft/client/util/BufferAllocator;
-#accessible field net/minecraft/client/render/BufferBuilder drawMode Lnet/minecraft/client/render/VertexFormat$DrawMode;
-#accessible field net/minecraft/client/render/BufferBuilder format Lnet/minecraft/client/render/VertexFormat;
-#accessible field net/minecraft/client/render/Tessellator allocator Lnet/minecraft/client/util/BufferAllocator;
+accessible field net/minecraft/client/render/GameRenderer blurPostProcessor Lnet/minecraft/client/gl/PostEffectProcessor;
+accessible field net/minecraft/client/render/GameRenderer pool Lnet/minecraft/client/util/Pool;

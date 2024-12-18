@@ -1,12 +1,12 @@
 package dev.imb11.flow.render;
 
 import dev.imb11.flow.Flow;
-import dev.imb11.flow.api.rendering.FlowBlurHelper;
 import dev.imb11.flow.config.FlowConfig;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Identifier;
 
 import java.awt.*;
 
@@ -30,7 +30,18 @@ public class FlowBackgroundHelper {
         }
 
         if(!FlowConfig.get().disableBgBlur) {
-            FlowBlurHelper.apply(width, height, context, blurIntensity, 4);
+            var client = MinecraftClient.getInstance();
+
+            //? if >=1.21.2 {
+            PostEffectProcessor postEffectProcessor = client.getShaderLoader().loadPostEffect(Identifier.ofVanilla("blur"), net.minecraft.client.render.DefaultFramebufferSet.MAIN_ONLY);
+            if (postEffectProcessor != null) {
+                postEffectProcessor.setUniforms("Radius", blurIntensity);
+                postEffectProcessor.render(client.getFramebuffer(), client.gameRenderer.pool);
+            }
+            //?} else {
+            /*client.gameRenderer.blurPostProcessor.setUniforms("Radius", blurIntensity);
+            client.gameRenderer.blurPostProcessor.render(client.getRenderTickCounter().getTickDelta(true));
+            *///?}
         }
     }
 }
