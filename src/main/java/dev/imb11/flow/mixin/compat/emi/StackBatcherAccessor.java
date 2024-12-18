@@ -1,6 +1,5 @@
 package dev.imb11.flow.mixin.compat.emi;
 
-import dev.emi.emi.screen.StackBatcher;
 import dev.imb11.flow.compat.emi.EmiStackBatcherSetter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -11,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Pseudo
-@Mixin(value = StackBatcher.class, remap = false)
+@Mixin(targets = "dev.emi.emi.screen.StackBatcher", remap = false)
 public class StackBatcherAccessor implements EmiStackBatcherSetter {
     @Shadow
     private int y;

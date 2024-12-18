@@ -28,9 +28,7 @@ public abstract class ScreenMixin extends Screen {
     @Unique
     private float elapsed = 0f;
 
-    /*? if >=1.20.2 {*/
     @Shadow protected abstract void drawBackground(DrawContext context, float delta, int mouseX, int mouseY);
-    /*?}*/
 
     protected ScreenMixin(Text title) {
         super(title);
@@ -53,7 +51,7 @@ public abstract class ScreenMixin extends Screen {
 
     @Inject(method = "close", at = @At("HEAD"))
     private void $mark_exit_animation(CallbackInfo ci) {
-        if(isDisabledScreen() || FlowAPI.shouldAvoidCalculation() || FlowConfig.get().disableEaseOut) return;
+        if(isDisabledScreen() || FlowConfig.get().disableEaseOut) return;
 
         FlowAPI.setInTransition(true);
         FlowAPI.setClosing(true);
@@ -67,18 +65,10 @@ public abstract class ScreenMixin extends Screen {
     }
 
     @Override
-    /*? if <1.20.2 {*/
-    /*public void renderBackground(DrawContext context) {
-    *//*?} else {*/
     public void renderInGameBackground(DrawContext context) {
-    /*?}*/
         if(RenderHelper.isRendering || FlowBackgroundHelper.shouldSkipRender()) {
             if(!RenderHelper.isRendering) {
-                //? if <1.20.2 {
-                /*super.renderBackground(context);
-                *///?} else {
                 super.renderInGameBackground(context);
-                //?}
             }
             return;
         }
@@ -104,15 +94,9 @@ public abstract class ScreenMixin extends Screen {
         FlowBackgroundHelper.renderBgEffects(this.width, this.height, context, blurIntensity, AARRGGBB);
     }
 
-    /*? if <1.20.2 {*/
-    /*@Inject(method = "render", at = @At("HEAD"))
-    private void $render_animation(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        this.renderBackground(context);
-    *//*?} else {*/
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
     private void $render_animation(Screen instance, DrawContext context, int mouseX, int mouseY, float delta) {
         this.renderInGameBackground(context);
-    /*?}*/
         if(RenderHelper.isRendering) {
             super.render(context, mouseX, mouseY, delta);
             return;
@@ -120,11 +104,7 @@ public abstract class ScreenMixin extends Screen {
 
         RenderHelper.cacheScreen((HandledScreen<?>) (Object) this, context, delta, mouseX, mouseY);
 
-        /*? if <1.21 {*/
-        /*elapsed += MinecraftClient.getInstance().getLastFrameDuration() / 25;
-        *//*?} else {*/
         elapsed += MinecraftClient.getInstance().getRenderTickCounter().getLastFrameDuration() / 25;
-        /*?}*/
 
         var totalTime = FlowConfig.get().easeInDuration;
 
@@ -152,14 +132,10 @@ public abstract class ScreenMixin extends Screen {
             provider.apply(context.getMatrices());
         }
 
-        /*? if <1.20.2 {*/
-        /*context.getMatrices().push();
-        *//*?} else {*/
         this.drawBackground(context, delta, mouseX, mouseY);
 
         for (Drawable drawable : ((ScreenAccessor) this).getDrawables()) {
             drawable.render(context, mouseX, mouseY, delta);
         }
-        /*?}*/
     }
 }

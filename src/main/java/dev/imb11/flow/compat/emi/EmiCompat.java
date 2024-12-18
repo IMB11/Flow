@@ -12,10 +12,7 @@ public class EmiCompat {
         LOGGER.info("Displaying EMI warning toast.");
         LOGGER.warn("EMI is not compatible with Flow's expand animation. It's recommended to use a different animation instead.");
         MinecraftClient client = MinecraftClient.getInstance();
-        /*? if <1.20.3 {*/
-        /*client.getToastManager().add(SystemToast.create(client, SystemToast.Type.TUTORIAL_HINT, Text.translatable("flow.toast.emi.title"), Text.translatable("flow.toast.emi.description")));
-        *//*?} else {*/
+
         client.getToastManager().add(new SystemToast(SystemToast.Type.WORLD_ACCESS_FAILURE, Text.translatable("flow.toast.emi.title"), Text.translatable("flow.toast.emi.description")));
-        /*?}*/
     }
 }

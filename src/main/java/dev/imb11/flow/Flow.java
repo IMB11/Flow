@@ -34,11 +34,7 @@ public class Flow implements ClientModInitializer {
 		});
 
 		HudRenderCallback.EVENT.register((context, tickDeltac) -> {
-			/*? if <1.21 {*/
-			/*float frameDuration = MinecraftClient.getInstance().getLastFrameDuration() / 25;
-			*//*?} else {*/
 			float frameDuration = MinecraftClient.getInstance().getRenderTickCounter().getLastFrameDuration() / 25;
-			/*?}*/
 
 			context.getMatrices().push();
 			context.getMatrices().translate(0, 0, 5000);
@@ -46,6 +42,7 @@ public class Flow implements ClientModInitializer {
 			if(FlowAPI.isInTransition() && FlowAPI.isClosing()) {
 				RenderHelper.renderOutput(context, frameDuration);
 			}
+
 			context.getMatrices().pop();
 
 //			if(buf != null && MinecraftClient.getInstance().currentScreen == null) {

@@ -68,31 +68,15 @@ public class RenderHelper {
         OffsetProvider provider = animationType.calculateOffset(w, h, progress, true);
         provider.apply(context.getMatrices());
 
-        /*? if >=1.21 {*/
         var buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         var pose = context.getMatrices().peek().getPositionMatrix();
         buffer.vertex(pose, 0, h, 0).texture(0f, 0f);
         buffer.vertex(pose, w, h, 0).texture(1f, 0f);
         buffer.vertex(pose, w, 0, 0).texture(1f, 1f);
         buffer.vertex(pose, 0, 0, 0).texture(0f, 1f);
-        /*?} else {*/
-        /*var tesselator = Tessellator.getInstance();
-        var buffer = tesselator.getBuffer();
-        var pose = context.getMatrices().peek().getPositionMatrix();
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        buffer.vertex(pose, 0, h, 0).texture(0f, 0f).next();
-        buffer.vertex(pose, w, h, 0).texture(1f, 0f).next();
-        buffer.vertex(pose, w, 0, 0).texture(1f, 1f).next();
-        buffer.vertex(pose, 0, 0, 0).texture(0f, 1f).next();
-        *//*?}*/
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-
-        /*? if <1.21 {*/
-        /*tesselator.draw();
-        *//*?} else {*/
         BufferRenderer.drawWithGlobalProgram(buffer.end());
-        /*?}*/
 
         RenderSystem.disableBlend();
 
